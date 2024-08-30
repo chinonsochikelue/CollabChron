@@ -66,7 +66,7 @@ const Navbar = () => {
               />
             </a>
           </div>
-          <div className="order-1 xl:order-2">
+          <div className="order-1 xl:order-2 hidden">
             <Logo />
           </div>
 
