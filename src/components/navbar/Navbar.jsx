@@ -66,9 +66,10 @@ const Navbar = () => {
               />
             </a>
           </div>
-          <div className="order-1 xl:order-2 sm:hidden">
-            <Logo />
-          </div>
+          <div className="hidden sm:block xl:order-2">
+  <Logo />
+</div>
+
 
           <div className="hidden md:flex gap-8 items-center order-3 xl:order-3">
             <Button />
