@@ -1,0 +1,15 @@
+# robots.txt for https://www.yourdomain.com
+
+User-agent: *
+Disallow: /api/
+Disallow: /private/
+Allow: /
+
+# Custom directive to slow down crawling rate
+Crawl-delay: 10
+
+# Unique directive to specify a custom bot
+User-agent: YourCustomBot
+Disallow: /
+
+Sitemap: https://www.collabchron.com.ng/sitemap.xml

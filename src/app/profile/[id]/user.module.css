@@ -1,0 +1,52 @@
+.user-profile {
+    border: 1px solid #eaeaea;
+    border-radius: 8px;
+    padding: 16px;
+    max-width: 400px;
+    background-color: #fff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .profile-header {
+    display: flex;
+    align-items: center;
+  }
+  
+  .profile-image {
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+    margin-right: 16px;
+  }
+  
+  .profile-info {
+    flex: 1;
+  }
+  
+  .rating {
+    color: gold;
+  }
+  
+  .message-button,
+  .follow-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 16px;
+    cursor: pointer;
+  }
+  
+  .social-links {
+    margin-top: 16px;
+  }
+  
+  .social-links a {
+    margin-right: 8px;
+    text-decoration: none;
+    font-size: 24px;
+  }
+  
+  .follower-count {
+    margin-top: 8px;
+  }

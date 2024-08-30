@@ -1,0 +1,240 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base{
+ /* .h1 {
+  @apply text-[98px] xl:text-[80px] leading-[1.1] font-semibold;
+ } */
+
+ .h2 {
+  @apply text-[36px] xl:text-[48px] leading-[1.1] font-semibold;
+ }
+
+ .h3 {
+  @apply text-[20px] xl:text-[24px] leading-[1.1] font-semibold;
+ }
+}
+
+body {
+  margin: 0;
+  font-family: "Poppins", sans-serif;
+  padding: 10px;
+}
+
+/* Custom Scrollbar Styles */
+/* Track */
+::-webkit-scrollbar {
+  display: none;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background-color: #c0c0c0;
+  border-radius: 6px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background-color: #a0a0a0;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f5f5f5;
+}
+
+/* Pagination.css */
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.pagination-btn {
+  padding: 0.5rem 1rem;
+  margin: 0 0.25rem;
+  border: 1px solid #ddd;
+  cursor: pointer;
+  background-color: #fff;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: #f0f0f0;
+    color: #9f1239;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+}
+
+.active {
+  background-color: #9f1239;
+  color: #fff;
+}
+
+.pagination-ellipsis {
+  padding: 0.5rem 1rem;
+  margin: 0 0.25rem;
+  cursor: not-allowed;
+  color: #ccc;
+}
+
+/* Loading CSS */
+.loading-container {
+  width: 100%;
+  height: 100vh;
+  background-color: #00000087;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  z-index: 999;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.loading-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #ffffff70;
+}
+
+.loading-wave {
+  width: 300px;
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+}
+
+.loading-bar {
+  width: 20px;
+  height: 10px;
+  margin: 0 5px;
+  background-color: rgb(225 29 72);
+  /* #3498db; */
+  border-radius: 5px;
+  animation: loading-wave-animation 1s ease-in-out infinite;
+}
+
+.loading-bar:nth-child(2) {
+  animation-delay: 0.1s;
+}
+
+.loading-bar:nth-child(3) {
+  animation-delay: 0.2s;
+}
+
+.loading-bar:nth-child(4) {
+  animation-delay: 0.3s;
+}
+
+@keyframes loading-wave-animation {
+  0% {
+    height: 10px;
+  }
+
+  50% {
+    height: 50px;
+  }
+
+  100% {
+    height: 10px;
+  }
+}
+
+
+pre {
+  background-color: #2e2e2e; /* Dark background for code block */
+  padding: 15px 20px; /* Add padding for better readability */
+  border-radius: 8px; /* Rounded corners */
+  color: #f8f8f2; /* Light text color */
+  overflow-x: auto; /* Allow horizontal scrolling for long lines */
+  font-family: 'Courier New', Courier, monospace; /* Monospaced font for code */
+  line-height: 1.6; /* Increase line height for better readability */
+  border: 1px solid #444; /* Optional: Add border for definition */
+  white-space: pre-wrap; /* Ensure long lines are wrapped */
+}
+
+/* General code styling */
+code {
+  color: #f8f8f2; /* Default text color */
+}
+
+/* Syntax highlighting */
+.keyword {
+  color: #66d9ef; /* Color for keywords */
+  font-weight: bold;
+}
+
+.string {
+  color: #a6e22e; /* Color for strings */
+}
+
+.comment {
+  color: #75715e; /* Color for comments */
+  font-style: italic;
+}
+
+.function {
+  color: #f92672; /* Color for functions */
+}
+
+.number {
+  color: #ae81ff; /* Color for numbers */
+}
+
+.operator {
+  color: #f8f8f2; /* Color for operators */
+}
+
+/* Optional: Additional styling for other parts */
+.tag {
+  color: #e6db74; /* Color for tags */
+}
+
+.attribute {
+  color: #e6db74; /* Color for attributes */
+}
+
+
+
+.ql-editor img {
+  display: flex;
+  width: 90%; /* or any other desired width */
+  height: 70vh; /* maintain aspect ratio */
+  border-radius: 8px; /* rounded corners */
+  margin: 1rem; /* margin around the image */
+  align-items: center;
+  justify-content: center;
+}
+
+
+.ql-video iframe {
+  /* position: absolute; */
+  width: 100%;
+  height: 50vh;
+  border-radius: 10px;
+}
+
+.ql-h1 h1 {
+  @apply text-[38px] xl:text-[60px] leading-[1.1] font-semibold;
+}
+
+.ql-h2 h2 {
+  @apply text-[32px] xl:text-[38px] leading-[1.1] font-semibold;
+ }
+
+ .ql-h3 h3 {
+  @apply text-[18px] xl:text-[24px] leading-[1.1] font-semibold;
+ }

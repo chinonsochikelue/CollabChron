@@ -1,0 +1,25 @@
+.clapContainer {
+    display: flex;
+    align-items: center;
+  }
+  
+  .clapSection {
+    display: flex;
+    align-items: center;
+  }
+  
+  .clapButton {
+    background-color: #ff6b6b;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  .clapButton:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+  

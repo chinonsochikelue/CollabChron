@@ -1,0 +1,143 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Account {
+  id                String  @id @default(cuid()) @map("_id")
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid()) @map("_id")
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id            String      @id @default(cuid()) @map("_id")
+  name          String?
+  email         String      @unique
+  emailVerified DateTime?
+  createdAt     DateTime    @default(now())
+  image         String?
+  skills        String?
+  about         String?
+  twitter       String?
+  linkedin      String?
+  facebook      String?
+  github        String?
+  instagram     String?
+  youtube       String?
+  website       String?
+  buymeacoffee  String?
+  accounts      Account[]
+  sessions      Session[]
+  posts         Post[]
+  comments      Comment[]
+  Save          Save[]
+  Clap          Clap[]
+  Following     Following[]
+}
+
+model VerificationToken {
+  identifier String   @id @map("_id")
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Category {
+  id    String  @id @default(cuid()) @map("_id")
+  slug  String  @unique
+  title String
+  img   String?
+  posts Post[]
+}
+
+model Post {
+  id        String    @id @default(cuid()) @map("_id")
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  slug      String    @unique
+  title     String
+  desc      String
+  img       String?
+  views     Int       @default(0)
+  catSlug   String
+  cat       Category  @relation(fields: [catSlug], references: [slug])
+  userEmail String
+  user      User      @relation(fields: [userEmail], references: [email])
+  Clap      Clap[]
+  Comments  Comment[]
+  Save      Save[]
+}
+
+model Comment {
+  id              String    @id @default(cuid()) @map("_id")
+  createdAt       DateTime  @default(now())
+  desc            String
+  userEmail       String
+  user            User      @relation(fields: [userEmail], references: [email])
+  postSlug        String
+  post            Post      @relation(fields: [postSlug], references: [slug])
+  parentCommentId String?
+  parentComment   Comment?  @relation("Comment to Comment", fields: [parentCommentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  replies         Comment[] @relation("Comment to Comment")
+  Clap            Clap[]
+  clapCount       Int       @default(0)
+}
+
+model Clap {
+  id        String   @id @default(cuid()) @map("_id")
+  userEmail String
+  postId    String
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  commentId String?
+  Comment   Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  clapCount Int      @default(0)
+  user      User     @relation(fields: [userEmail], references: [email])
+}
+
+model Save {
+  id        String   @id @default(cuid()) @map("_id")
+  createdAt DateTime @default(now())
+  userEmail String
+  user      User     @relation(fields: [userEmail], references: [email])
+  postId    String
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+}
+
+model Following {
+  id          String @id @default(cuid()) @map("_id")
+  followerId  String
+  followingId String
+  userEmail   String
+  user        User   @relation(fields: [userEmail], references: [email])
+
+  @@unique([followerId, followingId])
+}
