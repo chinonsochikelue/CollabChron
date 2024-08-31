@@ -4,6 +4,7 @@ User-agent: *
 Disallow: /api/
 Disallow: /private/
 Allow: /
+Allow: /api/sitemap/
 
 # Custom directive to slow down crawling rate
 Crawl-delay: 10
@@ -12,4 +13,4 @@ Crawl-delay: 10
 User-agent: YourCustomBot
 Disallow: /
 
-Sitemap: https://www.collabchron.com.ng/sitemap.xml
+Sitemap: https://www.collabchron.com.ng/api/sitemap
