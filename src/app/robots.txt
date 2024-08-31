@@ -13,7 +13,6 @@ Disallow: /api/users/[id]/
 Disallow: /api/userPosts/
 Disallow: /api/popular/
 Disallow: /api/follow/
-Disallow: /private/
 Allow: /
 Allow: /api/sitemap/
 Allow: /api/rss/
