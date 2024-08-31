@@ -21,8 +21,4 @@ Allow: /api/rss/
 # Custom directive to slow down crawling rate
 Crawl-delay: 3
 
-# Unique directive to specify a custom bot
-User-agent: YourCustomBot
-Disallow: /api/
-
 Sitemap: https://www.collabchron.com.ng/api/sitemap
