@@ -87,13 +87,13 @@ export default function RootLayout({ children }) {
         className={`${inter.className} w-full min-h-screen dark:bg-[#020b19] bg-white`}
       >
         <AuthProvider>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <div>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              enableSystem
+              disableTransitionOnChange
+            >
+              <div>
                 <Toaster />
                 <Navbar />
                 <main>{children}</main>
@@ -104,4 +104,5 @@ export default function RootLayout({ children }) {
       </body>
     </html>
   );
-}
+  }
+    
