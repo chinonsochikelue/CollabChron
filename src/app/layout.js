@@ -5,6 +5,7 @@ import Footer from "@/components/footer/Footer";
 import AuthProvider from "@/providers/AuthProvider";
 import { ThemeProvider } from "@/providers/theme-provider";
 import { Toaster } from "react-hot-toast";
+import { GoogleAnalytics } from '@next/third-parties/google'
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -28,8 +29,8 @@ export const metadata = {
     nocache: true,
     googleBot: {
       index: true,
-      follow: false,
-      noimageindex: true,
+      follow: true,
+      noimageindex: false,
       'max-video-preview': -1,
       'max-image-preview': 'large',
       'max-snippet': -1,
@@ -38,7 +39,7 @@ export const metadata = {
   icons: {
     icon: [
       { url: '/favicon.ico' },
-      new URL('/favicon.ico', 'https:www.collabchron.com.ng'),
+      new URL('/favicon.ico', 'https://www.collabchron.com.ng'),
       { url: '/favicon.ico', media: '(prefers-color-scheme: dark)' },
     ],
     shortcut: ['/shortcut-icon.png'],
@@ -81,6 +82,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className="scroll-smooth" suppressHydrationWarning>
+      <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID} />
       <body
         className={`${inter.className} w-full min-h-screen dark:bg-[#020b19] bg-white`}
       >

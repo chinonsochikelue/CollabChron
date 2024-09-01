@@ -76,7 +76,7 @@ const FollowButton = ({ followingId, user }) => {
       disabled={loading} // Disable button while loading
     >
       {status === "unauthenticated" ? (
-        <Link href="/login">Login to follow {user?.name.substring(0, 15) + "..."}</Link>
+        <Link href="/login">Login to follow {user?.name.substring(0, 12) + "..."}</Link>
       ) : loading ? (
         <Loader className="animate-spin text-black dark:text-white" size={25} />
       ) : isFollowing ? (

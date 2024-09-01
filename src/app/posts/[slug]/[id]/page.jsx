@@ -193,7 +193,7 @@ const SinglePage = async ({ params }) => {
                         </a>
                       ) : (
                         <>
-                          <FollowButton followingId={postData.user.id} />
+                          <FollowButton followingId={postData.user.id} user = {postData?.user} />
                           <a
                             href={`mailto:${postData.user.email}`}
                             className="py-2 px-4 hover:scale-125 transition-all ease duration-200"
