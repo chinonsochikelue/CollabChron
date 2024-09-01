@@ -30,7 +30,7 @@ const Banner = ({ post }) => {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <div className="relative w-full h-[500px] 2xl:h-[600px] flex px-0 lg:px-20">
-        <Link href={`/posts/${post?.slug}/${post?.id}`} className="w-full" aria-label={`Read more about ${post?.title}`}>
+        <Link href={`/posts/${post?.slug}`} className="w-full" aria-label={`Read more about ${post?.title}`}>
         {post?.img ? (
           <Image
             src={post?.img}
@@ -49,7 +49,7 @@ const Banner = ({ post }) => {
         </Link>
 
         <div className="absolute flex flex-col md:right-10 bottom-10 md:bottom-2 w-full md:w-2/4 lg:w-1/3 2xl:w-[480px] bg-white dark:bg-[#05132b] shadow-2xl p-5 rounded-lg gap-3">
-          <Link href={`/posts/${post?.slug}/${post?.id}`} aria-label={`Post title: ${post?.title}`}>
+          <Link href={`/posts/${post?.slug}`} aria-label={`Post title: ${post?.title}`}>
             <h1 className="font-semibold text-xl text-black dark:text-white">
               {post?.title}
             </h1>
@@ -59,7 +59,7 @@ const Banner = ({ post }) => {
             {parse(post?.desc.substring(0, 160) + "...")}
           </div>
           
-          <Link href={`/posts/${post?.slug}/${post?.id}`} className="w-fit bg-[#24a0ed] dark:bg-blue-600 bg-opacity-20 px-4 py-1 rounded-full text-sm cursor-pointer " aria-label={`Read more about ${post?.title}`}>
+          <Link href={`/posts/${post?.slug}/}`} className="w-fit bg-[#24a0ed] dark:bg-blue-600 bg-opacity-20 px-4 py-1 rounded-full text-sm cursor-pointer " aria-label={`Read more about ${post?.title}`}>
             Read more...
           </Link>
 

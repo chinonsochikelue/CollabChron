@@ -23,7 +23,7 @@ export const GET = async (req) => {
     ];
 
     const dynamicPaths = posts.map(post => ({
-      path: `/posts/${post.slug}/${post.id}`, // Now includes post.id
+      path: `/posts/${post.slug}`, // Now includes post.id
       lastmod: new Date(post.updatedAt).toISOString(),
       priority: 0.7,
     }));

@@ -69,10 +69,14 @@ const Card = ({ item }) => {
             {new Date(item?.createdAt).toDateString()}
           </span>
           <span className="text-sm text-rose-600 font-semibold">
-            {item.catSlug}
+          <Link
+                  href={`/blog?cat=${item.catSlug}`}
+                >
+                  <span>{item.catSlug}</span>
+                </Link>
           </span>
         </div>
-        <Link href={`/posts/${item.slug}/${item.id}`}>
+        <Link href={`/posts/${item.slug}`}>
           <h1 className="text-xl 2xl:text-3xl font-semibold text-black dark:text-slate-200">
             {item.title}
           </h1>
@@ -82,7 +86,7 @@ const Card = ({ item }) => {
           {parse(item?.desc.substring(0, 260) + "...", options)}
         </div>
         <Link
-          href={`/posts/${item.slug}/${item.id}`}
+          href={`/posts/${item.slug}`}
           className="flex items-center gap-2 text-black dark:text-white"
           aria-label={`Read the post titled ${item.title} about ${item.catSlug}`}
         >

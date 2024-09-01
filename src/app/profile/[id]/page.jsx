@@ -23,7 +23,6 @@ import CardList from "../CardList";
 const getUserData = async (id, userEmail, page = 1, limit = 10) => {
   const offset = (page - 1) * limit;
 
-
   // Fetch the user data along with the required statistics
   const user = await prisma.user.findUnique({
     where: { id },
@@ -32,7 +31,7 @@ const getUserData = async (id, userEmail, page = 1, limit = 10) => {
         skip: offset,
         take: limit,
         orderBy: {
-          createdAt: 'desc', // Order posts from most recent to oldest
+          createdAt: "desc", // Order posts from most recent to oldest
         },
       },
       Following: {
@@ -115,8 +114,8 @@ const ProfilePage = async ({ params, searchParams }) => {
   const session = await getServerSession(authOptions);
   const user = await getUserData(id);
   console.log("posts", user?.posts);
-  
-// console.log("posts", user.posts?.title)
+
+  // console.log("posts", user.posts?.title)
   if (!user) {
     return (
       <div>
@@ -143,7 +142,7 @@ const ProfilePage = async ({ params, searchParams }) => {
             </p>
             <div className="flex flex-col items-center justify-center xl:flex-row gap-8">
               {isCurrentUser && (
-                <button size="lg" className="  rounded-3xl">
+                <button size="lg" className="  rounded-3xl border">
                   <Link
                     href={`/edit-profile/${user?.id}`}
                     className="uppercase flex items-center m-2"
@@ -155,11 +154,11 @@ const ProfilePage = async ({ params, searchParams }) => {
               <div>
                 {!isCurrentUser && (
                   <div>
-                    <FollowButton followingId={user.id} user ={user} />
+                    <FollowButton followingId={user.id} user={user} />
                   </div>
                 )}
               </div>
-              <div className="mb-8 xl:mb-0">
+              <div className="mb-8 xl:mb-0 justify-center">
                 <div className="flex gap-6">
                   <Link
                     href={`mailto:${user.email}`}
@@ -272,11 +271,27 @@ const ProfilePage = async ({ params, searchParams }) => {
         </div>
       </div>
       {isCurrentUser && (
-        <Link href={`/analytics/${user?.id}`}> View Your Analytics</Link>
+        <div className="flex flex-col items-center justify-center xl:flex-row gap-8">
+        <button size="lg" className="rounded-3xl border">
+          <Link
+            href={`/analytics/${user?.id}`}
+            className="uppercase flex items-center m-2"
+          >
+            {" "}
+            View Your Analytics
+          </Link>
+        </button>
+        </div>
       )}
       <Stats user={user} />
-      <CardList posts={user.Posts} page={page} userId={id} totalPosts={user.postsCount} limit={limit} />
-      </section>
+      <CardList
+        posts={user.Posts}
+        page={page}
+        userId={id}
+        totalPosts={user.postsCount}
+        limit={limit}
+      />
+    </section>
   );
 };
 

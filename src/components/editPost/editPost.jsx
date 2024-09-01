@@ -92,7 +92,7 @@ const EditPostForm = ({ post }) => {
     setLoading(true);
     try {
       const baseUrl = process.env.NEXT_PUBLIC_SITE_URL; 
-      const res = await fetch(`${baseUrl}/api/posts/${post?.slug}/${post.id}`, {
+      const res = await fetch(`${baseUrl}/api/posts/${post?.slug}`, {
         method: "PUT",
         body: JSON.stringify({
           title,
@@ -191,6 +191,7 @@ const EditPostForm = ({ post }) => {
         onChange={(e) => setCatSlug(e.target.value)}
       >
         <option value="News">News</option>
+        <option value="Lifestyle">Lifestyle</option>
         <option value="Education">Education</option>
         <option value="Sports">Sports</option>
         <option value="Entertainment">Entertainment</option>

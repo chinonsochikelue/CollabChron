@@ -157,7 +157,7 @@ const WritePage = () => {
   
 
   return (
-  <div className={styles.container}>
+  <div className={`styles.container mb-[70px]`}>
     {selectedImage && (
       <div className={styles.imageContainer}>
         <Image src={selectedImage} alt="Selected" layout="fill" objectFit="cover" />

@@ -1,23 +1,12 @@
-# robots.txt for https://www.yourdomain.com
+# robots.txt for https://www.collabchron.com.ng
 
 User-agent: *
-Disallow: /api/post/
-Disallow: /api/posts/
-Disallow: /api/users/
-Disallow: /api/auth/[...nextauth]/
-Disallow: /api/auth/
-Disallow: /api/categories/
-Disallow: /api/clap/
-Disallow: /api/comments/
-Disallow: /api/users/[id]/
-Disallow: /api/userPosts/
-Disallow: /api/popular/
-Disallow: /api/follow/
+Disallow: /api/
 Allow: /
-Allow: /api/sitemap/
-Allow: /api/rss/
+Allow: /routes/sitemap/
+Allow: /routes/rss/
 
 # Custom directive to slow down crawling rate
 Crawl-delay: 3
 
-Sitemap: https://www.collabchron.com.ng/api/sitemap
+Sitemap: https://www.collabchron.com.ng/routes/sitemap

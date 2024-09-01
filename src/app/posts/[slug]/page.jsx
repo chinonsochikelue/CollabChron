@@ -15,13 +15,14 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { dracula } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { Toaster } from "react-hot-toast";
 import Share from "@/components/share";
+import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 // Function to get post data from the database
-const getPostData = async (id) => {
+const getPostData = async (slug) => {
   try {
     const post = await prisma.post.update({
-      where: { id },
+      where: { slug },
       data: { views: { increment: 1 } },
       include: { user: true },
     });
@@ -34,15 +35,15 @@ const getPostData = async (id) => {
 // Generate static params for Next.js
 export async function generateStaticParams() {
   const posts = await prisma.post.findMany({
-    select: { id: true },
+    select: { slug: true },
   });
-  return posts.map((post) => ({ id: post.id }));
+  return posts.map((post) => ({ slug: post.id }));
 }
 
 // Generate metadata for each post
 export async function generateMetadata({ params }) {
-  const { id } = params;
-  const postData = await getPostData(id);
+  const { slug } = params;
+  const postData = await getPostData(slug);
 
   if (!postData) {
     return {
@@ -71,7 +72,7 @@ export async function generateMetadata({ params }) {
     openGraph: {
       title: postData.title,
       description: postData.desc,
-      url: `${process.env.NEXT_PUBLIC_SITE_URL}/posts/${postData.slug}/${postData.id}`,
+      url: `${process.env.NEXT_PUBLIC_SITE_URL}/posts/${postData.slug}`,
       type: "article",
       publishedTime: publishedAt,
       modifiedTime: modifiedAt,
@@ -84,11 +85,11 @@ export async function generateMetadata({ params }) {
       description: postData.desc,
       images: ogImages,
     },
-    canonical: `${process.env.NEXT_PUBLIC_SITE_URL}/posts/${postData.slug}/${postData.id}`, // Canonical tag for SEO
+    canonical: `${process.env.NEXT_PUBLIC_SITE_URL}/posts/${postData.slug}`, // Canonical tag for SEO
     alternates: {
-      canonical: `${process.env.NEXT_PUBLIC_SITE_URL}/posts/${postData.slug}/${postData.id}`,
+      canonical: `${process.env.NEXT_PUBLIC_SITE_URL}/posts/${postData.slug}`,
       types: {
-        "application/rss+xml": `${process.env.NEXT_PUBLIC_SITE_URL}/api/rss`,
+        "application/rss+xml": `${process.env.NEXT_PUBLIC_SITE_URL}/routes/rss`,
       },
     },
     robots: "index, follow", // Allow search engines to index and follow links on this page
@@ -98,8 +99,8 @@ export async function generateMetadata({ params }) {
 
 // Main component for displaying the single post page
 const SinglePage = async ({ params }) => {
-  const { id } = params;
-  const postData = await getPostData(id);
+  const { slug } = params;
+  const postData = await getPostData(slug);
 
   if (!postData) {
     return <NotFound />;
@@ -126,8 +127,7 @@ const SinglePage = async ({ params }) => {
     ],
   };
 
-
-  const postUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/posts/${postData.slug}/${postData.id}`;
+  const postUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/posts/${postData.slug}}`;
 
   return (
     <>
@@ -158,7 +158,9 @@ const SinglePage = async ({ params }) => {
             </h1>
             <div className="w-full flex items-center justify-evenly">
               <span className="text-rose-600 font-semibold">
-                {postData.catSlug}
+                <Link href={`/blog?cat=${postData.catSlug}`}>
+                  <span>{postData.catSlug}</span>
+                </Link>
               </span>
               <Tts data={postData} />
               <Clap postId={postData.id} />
@@ -170,19 +172,23 @@ const SinglePage = async ({ params }) => {
             <div className="w-full flex items-center gap-10 flex-wrap">
               {postData.user?.image && (
                 <div className="flex gap-3">
-                  <Image
-                    src={postData.user.image}
-                    alt={postData.user.name}
-                    className="object-cover w-12 h-12 rounded-full"
-                    width={45}
-                    height={45}
-                    priority
-                  />
+                  <Link href={`/profile/${postData.user.id}`}>
+                    <Image
+                      src={postData.user.image}
+                      alt={postData.user.name}
+                      className="object-cover w-12 h-12 rounded-full"
+                      width={45}
+                      height={45}
+                      priority
+                    />
+                  </Link>
                   <div>
                     <div className="flex flex-row gap-12 items-center">
-                      <p className="text-slate-800 dark:text-slate-200 font-medium">
-                        {postData.user.name}
-                      </p>
+                      <Link href={`/profile/${postData.user.id}`}>
+                        <p className="text-slate-800 dark:text-slate-200 font-medium">
+                          {postData.user.name}
+                        </p>
+                      </Link>
                       {isAuthor ? (
                         <a
                           href={`/edit-post/${postData.slug}/${postData.id}`}
@@ -193,7 +199,10 @@ const SinglePage = async ({ params }) => {
                         </a>
                       ) : (
                         <>
-                          <FollowButton followingId={postData.user.id} user = {postData?.user} />
+                          <FollowButton
+                            followingId={postData.user.id}
+                            user={postData?.user}
+                          />
                           <a
                             href={`mailto:${postData.user.email}`}
                             className="py-2 px-4 hover:scale-125 transition-all ease duration-200"
@@ -268,7 +277,11 @@ const SinglePage = async ({ params }) => {
               })}
             </div>
             <div className="w-full px-0 md:px-10 py-8 2xl:px-20">
-            <Share title={postData.title} desc={postData.desc} link={postUrl} />
+              <Share
+                title={postData.title}
+                desc={postData.desc}
+                link={postUrl}
+              />
             </div>
             <div className={styles.comment}>
               <Comments postSlug={postData.id} />

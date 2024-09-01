@@ -1,8 +1,9 @@
 .title{
-  background-color: coral;
-  color: white;
   padding: 5px 10px;
   text-align: center;
+  font-size: 50px;
+  font-family: 'Times New Roman', Times, serif;
+  font-weight: bold;
   text-transform: capitalize;
 }
 
@@ -11,3 +12,15 @@
   gap: 50px;
 }
 
+
+@media screen and (max-width: 1024px) {
+.title{
+  font-size: 30px;
+};
+
+  .content {
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+  }
+}

@@ -5,7 +5,7 @@ import Footer from "@/components/footer/Footer";
 import AuthProvider from "@/providers/AuthProvider";
 import { ThemeProvider } from "@/providers/theme-provider";
 import { Toaster } from "react-hot-toast";
-import { GoogleAnalytics } from '@next/third-parties/google'
+import { GoogleAnalytics } from '@next/third-parties/google';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -54,7 +54,7 @@ export const metadata = {
       },
     ],
   },
-  manifest: 'https://nextjs.org/manifest.json',
+  manifest: 'https://www.collabchron.com.ng/manifest.json',
   openGraph: {
     title: "Home - Collaboration Chronology",
     description:
@@ -62,7 +62,7 @@ export const metadata = {
     type: "website",
     images: [
       {
-        url: "/favicon.ico", // replace with the actual image path
+        url: "/favicon.ico",
         width: 800,
         height: 600,
         alt: "Banner Image",
@@ -74,9 +74,9 @@ export const metadata = {
     title: "Home - Collaboration Chronology",
     description:
       "CollabChron is a dynamic multi-author blog platform where writers and readers connect. Discover diverse perspectives, share your voice, and explore captivating stories on topics ranging from technology and lifestyle to culture and beyond.",
-    images: ["/favicon.ico"], // replace with the actual image path
+    images: ["/favicon.ico"],
   },
-  category: 'technology, news, sports, fashion, entertainment, coding, culture, styles, ml, machine learning',
+  category: 'technology, news, sports, fashion, entertainment, coding, culture, styles, machine learning',
 };
 
 export default function RootLayout({ children }) {
@@ -87,13 +87,13 @@ export default function RootLayout({ children }) {
         className={`${inter.className} w-full min-h-screen dark:bg-[#020b19] bg-white`}
       >
         <AuthProvider>
-            <ThemeProvider
-              attribute="class"
-              defaultTheme="system"
-              enableSystem
-              disableTransitionOnChange
-            >
-              <div>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <div>
                 <Toaster />
                 <Navbar />
                 <main>{children}</main>

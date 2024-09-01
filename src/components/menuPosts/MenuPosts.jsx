@@ -46,7 +46,7 @@ const MenuPosts = ({ withImage }) => {
             itemType="https://schema.org/BlogPosting"
           >
             <Link
-              href={`/posts/${post.slug}/${post.id}`}
+              href={`/posts/${post.slug}`}
               className={styles.item}
               aria-label={`Read the post titled ${post.title} about ${post.catSlug}`}
             >
