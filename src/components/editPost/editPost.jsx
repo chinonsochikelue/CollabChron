@@ -52,7 +52,7 @@ const EditPostForm = ({ post }) => {
         (snapshot) => {
           const progress =
             (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          console.log("Upload is " + progress + "% done");
+          toast.success("Upload is " + progress + "% done");
           switch (snapshot.state) {
             case "paused":
               console.log("Upload is paused");
@@ -111,7 +111,7 @@ const EditPostForm = ({ post }) => {
         toast.success(
           "Post updated successfully!, Navigating to the updated post"
         );
-        router.push(`${baseUrl}/posts/${data?.slug}/${data?.id}`);
+        router.push(`${baseUrl}/posts/${data?.slug}`);
       } else {
         toast.error("Failed to update this post.");
       }
