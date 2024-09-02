@@ -29,7 +29,7 @@ const EditPostPage = async ({ params }) => {
   }
 
   return (
-    <div className="p-6">
+    <div className="p-6 mb-[-70px]">
       <h1 className="text-2xl font-bold mb-4">Edit Post</h1>
       <EditPostForm post={post} />
     </div>
