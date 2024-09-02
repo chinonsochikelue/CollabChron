@@ -92,7 +92,7 @@ const EditPostForm = ({ post }) => {
     setLoading(true);
     try {
       const baseUrl = process.env.NEXT_PUBLIC_SITE_URL; 
-      const res = await fetch(`${baseUrl}/api/posts/${post?.slug}`, {
+      const res = await fetch(`${baseUrl}/api/posts/${post?.slug}/${post?.id}`, {
         method: "PUT",
         body: JSON.stringify({
           title,
