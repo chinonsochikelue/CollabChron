@@ -92,7 +92,6 @@ export async function generateMetadata({ params }) {
         "application/rss+xml": `${process.env.NEXT_PUBLIC_SITE_URL}/routes/rss`,
       },
     },
-    robots: "index, follow", // Allow search engines to index and follow links on this page
     author: postData.user?.name || "Chinonso Chikelue (fluantiX)", // Fallback author name
   };
 }
