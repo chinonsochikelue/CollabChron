@@ -6,6 +6,10 @@ Allow: /
 Allow: /routes/sitemap/
 Allow: /routes/rss/
 Allow: /posts/
+Allow: /profile/
+Allow: /blog/
+Allow: /about/
+Allow: /contact/
 
 
 Sitemap: https://www.collabchron.com.ng/routes/sitemap
