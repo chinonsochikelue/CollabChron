@@ -49,7 +49,7 @@ function page() {
         <meta name="author" content="CollabChron" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta name="robots" content="index, follow" />
-        <link rel="canonical" href="http://localhost:3000/contact" />
+        <link rel="canonical" href="https://www.collabchron.com.ng/contact" />
       </Head>
     <motion.section
       initial={{ opacity: 0 }}
