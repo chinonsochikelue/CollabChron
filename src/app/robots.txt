@@ -5,8 +5,7 @@ Disallow: /api/
 Allow: /
 Allow: /routes/sitemap/
 Allow: /routes/rss/
+Allow: /posts/
 
-# Custom directive to slow down crawling rate
-Crawl-delay: 3
 
 Sitemap: https://www.collabchron.com.ng/routes/sitemap
