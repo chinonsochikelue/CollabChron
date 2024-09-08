@@ -11,10 +11,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
   metadataBase: new URL('https://www.collabchron.com.ng'),
-  title: {
-    default: "Collaboration Chronology",
-    template: "%s - Collaboration Chronology",
-  },
+  title: "collabchron"
   description:
     "CollabChron is a dynamic multi-author blog platform where writers and readers connect. Discover diverse perspectives, share your voice, and explore captivating stories on topics ranging from technology and lifestyle to culture and beyond.",
   alternates: {
@@ -56,7 +53,7 @@ export const metadata = {
   },
   manifest: 'https://www.collabchron.com.ng/manifest.json',
   openGraph: {
-    title: "Home - Collaboration Chronology",
+    title: "Home - CollabChron",
     description:
       "CollabChron is a dynamic multi-author blog platform where writers and readers connect. Discover diverse perspectives, share your voice, and explore captivating stories on topics ranging from technology and lifestyle to culture and beyond.",
     type: "website",
@@ -71,7 +68,7 @@ export const metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Home - Collaboration Chronology",
+    title: "Home - CollabChron",
     description:
       "CollabChron is a dynamic multi-author blog platform where writers and readers connect. Discover diverse perspectives, share your voice, and explore captivating stories on topics ranging from technology and lifestyle to culture and beyond.",
     images: ["/favicon.ico"],
