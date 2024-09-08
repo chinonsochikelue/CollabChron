@@ -1,4 +1,4 @@
-import Menu from "@/components/Menu/Menu";
+ import Menu from "@/components/Menu/Menu";
 import styles from "./singlePage.module.css"; // Import your CSS module
 import Image from "next/image";
 import Comments from "@/components/comments/Comments";
@@ -126,7 +126,7 @@ const SinglePage = async ({ params }) => {
     ],
   };
 
-  const postUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/posts/${postData.slug}}`;
+  const postUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/posts/${postData.slug}`;
 
   return (
     <>
