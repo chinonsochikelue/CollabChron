@@ -87,7 +87,6 @@ export async function generateMetadata({ params }) {
     },
     canonical: `${process.env.NEXT_PUBLIC_SITE_URL}/posts/${postData.slug}`, // Canonical tag for SEO
     alternates: {
-      canonical: `${process.env.NEXT_PUBLIC_SITE_URL}/posts/${postData.slug}`,
       types: {
         "application/rss+xml": `${process.env.NEXT_PUBLIC_SITE_URL}/routes/rss`,
       },
