@@ -41,6 +41,7 @@ export async function generateStaticParams() {
 }
 
 // Generate metadata for each post
+
 export async function generateMetadata({ params }) {
   const { slug } = params;
   const postData = await getPostData(slug);
@@ -59,19 +60,38 @@ export async function generateMetadata({ params }) {
   ).toISOString();
 
   const ogImages = postData.img ? [{ url: postData.img }] : [];
-
   const authors = postData.user?.name ? [postData.user.name] : [];
 
   const keywordsArray = [postData.title, postData.catSlug, postData.user.name];
   const keywords = keywordsArray.join(",");
 
+  // Use html-react-parser to parse and extract text from HTML
+  const extractTextFromHtml = (html) => {
+    let textContent = "";
+    parse(html, {
+      replace: (domNode) => {
+        // If the node is a text node, extract the text
+        if (domNode.type === "text") {
+          textContent += domNode.data;
+        }
+      },
+    });
+    return textContent;
+  };
+
+  // Parse and extract text from post description
+  const parsedDesc = extractTextFromHtml(postData.desc);
+
+  // Limit description length for SEO purposes
+  const metaDescription = parsedDesc.substring(0, 160); // Trim to 160 characters for SEO
+
   return {
     title: postData.title,
-    description: postData.desc,
+    description: metaDescription, // Use parsed text as description
     keywords,
     openGraph: {
       title: postData.title,
-      description: postData.desc,
+      description: metaDescription,
       url: `${process.env.NEXT_PUBLIC_SITE_URL}/posts/${postData.slug}`,
       type: "article",
       publishedTime: publishedAt,
@@ -82,7 +102,7 @@ export async function generateMetadata({ params }) {
     twitter: {
       card: "summary_large_image",
       title: postData.title,
-      description: postData.desc,
+      description: metaDescription,
       images: ogImages,
     },
     canonical: `${process.env.NEXT_PUBLIC_SITE_URL}/posts/${postData.slug}`, // Canonical tag for SEO
@@ -94,6 +114,7 @@ export async function generateMetadata({ params }) {
     author: postData.user?.name || "Chinonso Chikelue (fluantiX)", // Fallback author name
   };
 }
+
 
 // Main component for displaying the single post page
 const SinglePage = async ({ params }) => {
