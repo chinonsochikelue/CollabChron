@@ -8,6 +8,12 @@ import { FaFacebookF, FaReddit, FaTelegram } from "react-icons/fa";
 function Share({ title, desc, link }) {
   const [isMobile, setIsMobile] = useState(false);
   const hashtags = ["#tag1", "#tag2"]; // Customize your hashtags if needed
+  const maxDescLength = 100; // Maximum length of description
+
+  // Truncate the description to the defined length
+  const truncatedDesc = desc.length > maxDescLength 
+    ? `${desc.substring(0, maxDescLength)}...`
+    : desc;
 
   const copyUrl = () => {
     navigator.clipboard.writeText(link);
@@ -22,8 +28,8 @@ function Share({ title, desc, link }) {
 
   useEffect(() => {
     checkWindowSize();
-    window.addEventListener('resize', checkWindowSize);
-    return () => window.removeEventListener('resize', checkWindowSize);
+    window.addEventListener("resize", checkWindowSize);
+    return () => window.removeEventListener("resize", checkWindowSize);
   }, []);
 
   return (
@@ -32,7 +38,7 @@ function Share({ title, desc, link }) {
         <Copy />
       </span>
       <a
-        href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(desc)}&url=${encodeURIComponent(link)}&hashtags=${encodeURIComponent(hashtags.join(','))}`}
+        href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(truncatedDesc)}&url=${encodeURIComponent(link)}&hashtags=${encodeURIComponent(hashtags.join(","))}`}
         target="_blank"
         rel="noopener noreferrer"
         className="rounded-full p-1 cursor-pointer bg-black text-white"
@@ -43,12 +49,12 @@ function Share({ title, desc, link }) {
         href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(link)}`}
         target="_blank"
         rel="noopener noreferrer"
-        className="rounded-full p-1 cursor-pointer  bg-[#1877F2] text-white"
+        className="rounded-full p-1 cursor-pointer bg-[#1877F2] text-white"
       >
         <FaFacebookF />
       </a>
       <a
-        href={`https://www.threads.net/share?text=${encodeURIComponent(desc)}&url=${encodeURIComponent(link)}`}
+        href={`https://www.threads.net/share?text=${encodeURIComponent(truncatedDesc)}&url=${encodeURIComponent(link)}`}
         target="_blank"
         rel="noopener noreferrer"
         className="rounded-full p-1 cursor-pointer bg-black text-white"
@@ -83,7 +89,7 @@ function Share({ title, desc, link }) {
         <FaReddit />
       </a>
       <a
-        href={`https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent(desc)}`}
+        href={`https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent(truncatedDesc)}`}
         target="_blank"
         rel="noopener noreferrer"
         className="rounded-full p-1 cursor-pointer bg-[#32A8DD] text-white"
@@ -95,7 +101,7 @@ function Share({ title, desc, link }) {
         target="_blank"
         rel="noopener noreferrer"
         style={{
-          background: 'linear-gradient(45deg, #833AB4, #FD1D1D, #FCB045)',
+          background: "linear-gradient(45deg, #833AB4, #FD1D1D, #FCB045)",
         }}
         className="rounded-full p-1 cursor-pointer text-white"
       >
@@ -106,3 +112,4 @@ function Share({ title, desc, link }) {
 }
 
 export default Share;
+  
