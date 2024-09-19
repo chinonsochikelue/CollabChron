@@ -7,7 +7,7 @@ export async function GET() {
       orderBy: {
         views: 'desc',  // Sort posts by views in descending order
       },
-      take: 5,  // Limit results to top 10 posts
+      take: 3,  // Limit results to top 10 posts
     });
     
     return new Response(JSON.stringify(posts), {
