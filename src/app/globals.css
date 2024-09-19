@@ -212,7 +212,7 @@ code {
 .ql-editor img {
   display: flex;
   width: 90%; /* or any other desired width */
-  height: 70vh; /* maintain aspect ratio */
+  height: 50vh; /* maintain aspect ratio */
   border-radius: 8px; /* rounded corners */
   margin: 1rem; /* margin around the image */
   align-items: center;
