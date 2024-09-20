@@ -1,4 +1,4 @@
- import Menu from "@/components/Menu/Menu";
+we import Menu from "@/components/Menu/Menu";
 import styles from "./singlePage.module.css"; // Import your CSS module
 import Image from "next/image";
 import Comments from "@/components/comments/Comments";
@@ -149,11 +149,7 @@ const SinglePage = async ({ params }) => {
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
-      <div className="w-full px-0 md:px-10 py-8 2xl:px-20">
+     <div className="w-full px-0 md:px-10 py-8 2xl:px-20">
         <Toaster
           position="top-center"
           reverseOrder={false}
