@@ -9,6 +9,7 @@ export const GET = async (req) => {
       orderBy: {
         views: 'desc',
       },
+      take: 4,  
       include: {
         user: true,
       },
