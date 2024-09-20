@@ -1,10 +1,18 @@
-import { useEffect, useState } from "react";
+"use client";
+
 import Image from "next/image";
+import styles from "./writePage.module.css";
+import { useEffect, useState } from "react";
 import "react-quill/dist/quill.bubble.css";
 import "react-quill/dist/quill.snow.css";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import {
+  getStorage,
+  ref,
+  uploadBytesResumable,
+  getDownloadURL,
+} from "firebase/storage";
 import { app } from "@/utils/firebase";
 import { CircleFadingPlusIcon, ImageIcon, Loader } from "lucide-react";
 import dynamic from "next/dynamic";
@@ -25,22 +33,24 @@ const WritePage = () => {
   const [selectedImage, setSelectedImage] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // Firebase file upload logic
   useEffect(() => {
     if (file) {
       const storage = getStorage(app);
       const name = new Date().getTime() + file.name;
       const storageRef = ref(storage, name);
-
+  
       const uploadTask = uploadBytesResumable(storageRef, file);
-
+  
       uploadTask.on(
         "state_changed",
         (snapshot) => {
-          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
           console.log("Upload is " + progress + "% done");
         },
-        (error) => console.error(error),
+        (error) => {
+          console.error("Error uploading image:", error);
+        },
         () => {
           getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
             setMedia(downloadURL);
@@ -49,6 +59,14 @@ const WritePage = () => {
       );
     }
   }, [file]);
+
+  if (status === "loading") {
+    return <div className={styles.loading}>Loading...</div>;
+  }
+
+  if (status === "unauthenticated") {
+    router.push("/");
+  }
 
   const slugify = (str) =>
     str
@@ -68,13 +86,13 @@ const WritePage = () => {
           desc: value,
           img: media,
           slug: slugify(title),
-          catSlug: catSlug || "News",
+          catSlug: catSlug || "News", // Default category
         }),
       });
 
       if (res.status === 200) {
         const data = await res.json();
-        toast.success("Post published successfully! Navigating to the created post.");
+        toast.success("Post published successfully!, Navigating to the created post");
         router.push(`/posts/${data.slug}/${data.id}`);
       } else {
         toast.error("Failed to publish the post.");
@@ -94,11 +112,11 @@ const WritePage = () => {
         setSelectedImage(reader.result);
       };
       reader.readAsDataURL(file);
-      setFile(file); // Also update the file state for Firebase upload
+      setFile(file); // Update the file state for Firebase upload
     }
   };
 
-  // Custom image handler for Quill.js
+  // Custom image handler for Quill to upload images to Firebase
   const imageHandler = () => {
     const input = document.createElement("input");
     input.setAttribute("type", "file");
@@ -107,30 +125,35 @@ const WritePage = () => {
 
     input.onchange = async () => {
       const file = input.files[0];
-      if (file) {
-        const storage = getStorage(app);
-        const name = new Date().getTime() + file.name;
-        const storageRef = ref(storage, name);
+      const storage = getStorage(app);
+      const name = new Date().getTime() + file.name;
+      const storageRef = ref(storage, name);
 
-        const uploadTask = uploadBytesResumable(storageRef, file);
-        uploadTask.on(
-          "state_changed",
-          (snapshot) => {
-            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-            console.log("Upload is " + progress + "% done");
-          },
-          (error) => console.error(error),
-          async () => {
-            const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-            const range = quill.getSelection();
-            quill.insertEmbed(range.index, "image", downloadURL); // Insert image URL into editor
-          }
-        );
-      }
+      const uploadTask = uploadBytesResumable(storageRef, file);
+
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          console.log("Upload is " + progress + "% done");
+        },
+        (error) => {
+          console.error("Error uploading image:", error);
+        },
+        async () => {
+          const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+          const quillEditor = document.querySelector(".ql-editor");
+          const range = quillEditor.selection;
+
+          // Insert image URL into the Quill editor
+          const quill = quillEditor.__quill;
+          quill.insertEmbed(range.index, "image", downloadURL);
+        }
+      );
     };
   };
 
-  // Custom toolbar for Quill.js
   const modules = {
     toolbar: {
       container: [
@@ -145,7 +168,7 @@ const WritePage = () => {
         ["clean"],
       ],
       handlers: {
-        image: imageHandler, // Custom image handler
+        image: imageHandler, // Custom image handler for uploading images
       },
     },
   };
@@ -161,7 +184,6 @@ const WritePage = () => {
     "bullet",
     "align",
     "link",
-    "indent",
     "image",
     "video",
     "code-block",
@@ -182,9 +204,20 @@ const WritePage = () => {
         className={styles.input}
         onChange={(e) => setTitle(e.target.value)}
       />
-      <select className={styles.select} onChange={(e) => setCatSlug(e.target.value)}>
+      <select
+        className={styles.select}
+        onChange={(e) => setCatSlug(e.target.value)}
+      >
         <option value="News">News</option>
-        {/* Other categories */}
+        <option value="Education">Education</option>
+        <option value="Sports">Sports</option>
+        <option value="Entertainment">Entertainment</option>
+        <option value="Fashion">Fashion</option>
+        <option value="Food">Food</option>
+        <option value="Culture">Culture</option>
+        <option value="Travel">Travel</option>
+        <option value="AI & Machine Learning">AI & Machine Learning</option>
+        <option value="Coding">Coding</option>
       </select>
       <div className={styles.editor}>
         <button className={styles.button} onClick={() => setOpen(!open)}>
@@ -195,7 +228,7 @@ const WritePage = () => {
             <input
               type="file"
               id="image"
-              onChange={handleImageChange}
+              onChange={handleImageChange} // Update to use the new handler
               style={{ display: "none" }}
             />
             <button className={styles.addButton}>
@@ -216,11 +249,15 @@ const WritePage = () => {
         />
       </div>
       <button className={styles.publish} onClick={handleSubmit} disabled={loading}>
-        {loading ? <Loader className="animate-spin" width={24} height={24} /> : "Publish"}
+        {loading ? (
+          <Loader className="animate-spin" width={24} height={24} />
+        ) : (
+          "Publish"
+        )}
       </button>
     </div>
   );
 };
 
 export default WritePage;
-    
+        
