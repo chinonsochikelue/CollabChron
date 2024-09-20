@@ -1,18 +1,10 @@
-"use client";
-
-import Image from "next/image";
-import styles from "./writePage.module.css";
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import "react-quill/dist/quill.bubble.css";
 import "react-quill/dist/quill.snow.css";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import {
-  getStorage,
-  ref,
-  uploadBytesResumable,
-  getDownloadURL,
-} from "firebase/storage";
+import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { app } from "@/utils/firebase";
 import { CircleFadingPlusIcon, ImageIcon, Loader } from "lucide-react";
 import dynamic from "next/dynamic";
@@ -33,31 +25,22 @@ const WritePage = () => {
   const [selectedImage, setSelectedImage] = useState("");
   const [loading, setLoading] = useState(false);
 
-
+  // Firebase file upload logic
   useEffect(() => {
     if (file) {
       const storage = getStorage(app);
       const name = new Date().getTime() + file.name;
       const storageRef = ref(storage, name);
-  
+
       const uploadTask = uploadBytesResumable(storageRef, file);
-  
+
       uploadTask.on(
         "state_changed",
         (snapshot) => {
-          const progress =
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
           console.log("Upload is " + progress + "% done");
-          switch (snapshot.state) {
-            case "paused":
-              console.log("Upload is paused");
-              break;
-            case "running":
-              console.log("Upload is running");
-              break;
-          }
         },
-        (error) => {},
+        (error) => console.error(error),
         () => {
           getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
             setMedia(downloadURL);
@@ -66,14 +49,6 @@ const WritePage = () => {
       );
     }
   }, [file]);
-  
-  if (status === "loading") {
-    return <div className={styles.loading}>Loading...</div>;
-  }
-
-  if (status === "unauthenticated") {
-    router.push("/");
-  }
 
   const slugify = (str) =>
     str
@@ -83,33 +58,33 @@ const WritePage = () => {
       .replace(/[\s_-]+/g, "-")
       .replace(/^-+|-+$/g, "");
 
-      const handleSubmit = async () => {
-        setLoading(true); 
-        try {
-          const res = await fetch("/api/posts", {
-            method: "POST",
-            body: JSON.stringify({
-              title,
-              desc: value,
-              img: media,
-              slug: slugify(title),
-              catSlug: catSlug || "News", // If not selected, choose the general category
-            }),
-          });
-    
-          if (res.status === 200) {
-            const data = await res.json();
-            toast.success("Post published successfully!, Navigating to the created post");
-            router.push(`/posts/${data.slug}/${data.id}`);
-          } else {
-            toast.error("Failed to publish the post.");
-          }
-        } catch (error) {
-          toast.error("An error occurred while publishing the post."); 
-        } finally {
-          setLoading(false);
-        }
-      };
+  const handleSubmit = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch("/api/posts", {
+        method: "POST",
+        body: JSON.stringify({
+          title,
+          desc: value,
+          img: media,
+          slug: slugify(title),
+          catSlug: catSlug || "News",
+        }),
+      });
+
+      if (res.status === 200) {
+        const data = await res.json();
+        toast.success("Post published successfully! Navigating to the created post.");
+        router.push(`/posts/${data.slug}/${data.id}`);
+      } else {
+        toast.error("Failed to publish the post.");
+      }
+    } catch (error) {
+      toast.error("An error occurred while publishing the post.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -123,19 +98,58 @@ const WritePage = () => {
     }
   };
 
-  const modules = {
-    toolbar: [
-      [{ font: [] }],
-      [{ header: [1, 2, 3, 4, 5, 6, false] }],
-      ["bold", "italic", "underline", "strike", "blockquote"],
-      [{ list: "ordered" }, { list: "bullet" }],
-      [{ align: [] }],
-      ["link", "image", "video"],
-      [{ color: [] }, { background: [] }],
-      [{ "code-block": true }],
-      ["clean"],
-    ],
+  // Custom image handler for Quill.js
+  const imageHandler = () => {
+    const input = document.createElement("input");
+    input.setAttribute("type", "file");
+    input.setAttribute("accept", "image/*");
+    input.click();
+
+    input.onchange = async () => {
+      const file = input.files[0];
+      if (file) {
+        const storage = getStorage(app);
+        const name = new Date().getTime() + file.name;
+        const storageRef = ref(storage, name);
+
+        const uploadTask = uploadBytesResumable(storageRef, file);
+        uploadTask.on(
+          "state_changed",
+          (snapshot) => {
+            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            console.log("Upload is " + progress + "% done");
+          },
+          (error) => console.error(error),
+          async () => {
+            const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+            const range = quill.getSelection();
+            quill.insertEmbed(range.index, "image", downloadURL); // Insert image URL into editor
+          }
+        );
+      }
+    };
   };
+
+  // Custom toolbar for Quill.js
+  const modules = {
+    toolbar: {
+      container: [
+        [{ font: [] }],
+        [{ header: [1, 2, 3, 4, 5, 6, false] }],
+        ["bold", "italic", "underline", "strike", "blockquote"],
+        [{ list: "ordered" }, { list: "bullet" }],
+        [{ align: [] }],
+        ["link", "image", "video"],
+        [{ color: [] }, { background: [] }],
+        [{ "code-block": true }],
+        ["clean"],
+      ],
+      handlers: {
+        image: imageHandler, // Custom image handler
+      },
+    },
+  };
+
   const formats = [
     "header",
     "bold",
@@ -154,75 +168,59 @@ const WritePage = () => {
     "color",
     "background",
   ];
-  
 
   return (
-  <div className={`styles.container mb-[70px]`}>
-    {selectedImage && (
-      <div className={styles.imageContainer}>
-        <Image src={selectedImage} alt="Selected" layout="fill" objectFit="cover" />
-      </div>
-    )}
-    <input
-      type="text"
-      placeholder="Title"
-      className={styles.input}
-      onChange={(e) => setTitle(e.target.value)}
-    />
-    <select
-      className={styles.select}
-      onChange={(e) => setCatSlug(e.target.value)}
-    >
-      <option value="News">News</option>
-      <option value="Education">Education</option>
-      <option value="Sports">Sports</option>
-      <option value="Entertainment">Entertainment</option>
-      <option value="Fashion">Fashion</option>
-      <option value="Food">Food</option>
-      <option value="Culture">Culture</option>
-      <option value="Travel">Travel</option>
-      <option value="AI & Machine Learning">AI & Machine Learning</option>
-      <option value="Coding">Coding</option>
-    </select>
-    <div className={styles.editor}>
-      <button className={styles.button} onClick={() => setOpen(!open)}>
-        <CircleFadingPlusIcon width={30} height={30} />
-      </button>
-      {open && (
-        <div className={styles.add}>
-          <input
-            type="file"
-            id="image"
-            onChange={handleImageChange} // Update to use the new handler
-            style={{ display: "none" }}
-          />
-          <button className={styles.addButton}>
-            <label htmlFor="image">
-              <ImageIcon color="red" width={30} height={30} />
-            </label>
-          </button>
+    <div className={`styles.container mb-[70px]`}>
+      {selectedImage && (
+        <div className={styles.imageContainer}>
+          <Image src={selectedImage} alt="Selected" layout="fill" objectFit="cover" />
         </div>
       )}
-      <ReactQuill
-        className={styles.textArea}
-        theme="snow"
-        value={value}
-        onChange={setValue}
-        placeholder="Tell your story..."
-        modules={modules}
-        formats={formats}
+      <input
+        type="text"
+        placeholder="Title"
+        className={styles.input}
+        onChange={(e) => setTitle(e.target.value)}
       />
-    </div>
-    <button className={styles.publish} onClick={handleSubmit}  disabled={loading}>
-    {loading ? (
-          <Loader className="animate-spin" width={24} height={24} />
-        ) : (
-          "Publish"
+      <select className={styles.select} onChange={(e) => setCatSlug(e.target.value)}>
+        <option value="News">News</option>
+        {/* Other categories */}
+      </select>
+      <div className={styles.editor}>
+        <button className={styles.button} onClick={() => setOpen(!open)}>
+          <CircleFadingPlusIcon width={30} height={30} />
+        </button>
+        {open && (
+          <div className={styles.add}>
+            <input
+              type="file"
+              id="image"
+              onChange={handleImageChange}
+              style={{ display: "none" }}
+            />
+            <button className={styles.addButton}>
+              <label htmlFor="image">
+                <ImageIcon color="red" width={30} height={30} />
+              </label>
+            </button>
+          </div>
         )}
-    </button>
-  </div>
-);
-
+        <ReactQuill
+          className={styles.textArea}
+          theme="snow"
+          value={value}
+          onChange={setValue}
+          placeholder="Tell your story..."
+          modules={modules}
+          formats={formats}
+        />
+      </div>
+      <button className={styles.publish} onClick={handleSubmit} disabled={loading}>
+        {loading ? <Loader className="animate-spin" width={24} height={24} /> : "Publish"}
+      </button>
+    </div>
+  );
 };
 
 export default WritePage;
+    
