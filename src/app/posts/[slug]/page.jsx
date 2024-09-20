@@ -133,7 +133,6 @@ const SinglePage = async ({ params }) => {
     "@type": "BlogPosting",
     headline: postData.title,
     description: postData.desc,
-    image: postData.img,
     datePublished: new Date(postData.createdAt).toISOString(),
     dateModified: new Date(
       postData.updatedAt || postData.createdAt
@@ -264,7 +263,9 @@ const SinglePage = async ({ params }) => {
               src={postData.img}
               alt={postData.title}
               className="w-full md:w-1/2 h-auto md:h-[360px] 2xl:h-[460px] rounded object-contain"
-              fill
+              width={500}
+             height={500}
+             priority 
             />
           )}
         </div>
