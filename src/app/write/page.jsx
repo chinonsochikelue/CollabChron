@@ -18,6 +18,7 @@ import { CircleFadingPlusIcon, ImageIcon, Loader } from "lucide-react";
 import dynamic from "next/dynamic";
 import toast from "react-hot-toast";
 
+// Import Quill dynamically to avoid SSR issues
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
 const WritePage = () => {
@@ -33,24 +34,31 @@ const WritePage = () => {
   const [selectedImage, setSelectedImage] = useState("");
   const [loading, setLoading] = useState(false);
 
+  // Firebase file upload effect
   useEffect(() => {
     if (file) {
       const storage = getStorage(app);
       const name = new Date().getTime() + file.name;
       const storageRef = ref(storage, name);
-  
+
       const uploadTask = uploadBytesResumable(storageRef, file);
-  
+
       uploadTask.on(
         "state_changed",
         (snapshot) => {
           const progress =
             (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
           console.log("Upload is " + progress + "% done");
+          switch (snapshot.state) {
+            case "paused":
+              console.log("Upload is paused");
+              break;
+            case "running":
+              console.log("Upload is running");
+              break;
+          }
         },
-        (error) => {
-          console.error("Error uploading image:", error);
-        },
+        (error) => {},
         () => {
           getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
             setMedia(downloadURL);
@@ -68,6 +76,7 @@ const WritePage = () => {
     router.push("/");
   }
 
+  // Slugify title function
   const slugify = (str) =>
     str
       .toLowerCase()
@@ -77,7 +86,7 @@ const WritePage = () => {
       .replace(/^-+|-+$/g, "");
 
   const handleSubmit = async () => {
-    setLoading(true);
+    setLoading(true); 
     try {
       const res = await fetch("/api/posts", {
         method: "POST",
@@ -86,7 +95,7 @@ const WritePage = () => {
           desc: value,
           img: media,
           slug: slugify(title),
-          catSlug: catSlug || "News", // Default category
+          catSlug: catSlug || "News", // If not selected, choose the general category
         }),
       });
 
@@ -98,7 +107,7 @@ const WritePage = () => {
         toast.error("Failed to publish the post.");
       }
     } catch (error) {
-      toast.error("An error occurred while publishing the post.");
+      toast.error("An error occurred while publishing the post."); 
     } finally {
       setLoading(false);
     }
@@ -112,83 +121,84 @@ const WritePage = () => {
         setSelectedImage(reader.result);
       };
       reader.readAsDataURL(file);
-      setFile(file); // Update the file state for Firebase upload
+      setFile(file); // Also update the file state for Firebase upload
     }
   };
 
-  // Custom image handler for Quill to upload images to Firebase
+  // Custom image handler for uploading images to Firebase
   const imageHandler = () => {
-    const input = document.createElement("input");
-    input.setAttribute("type", "file");
-    input.setAttribute("accept", "image/*");
+    const input = document.createElement('input');
+    input.setAttribute('type', 'file');
+    input.setAttribute('accept', 'image/*');
     input.click();
 
     input.onchange = async () => {
       const file = input.files[0];
-      const storage = getStorage(app);
-      const name = new Date().getTime() + file.name;
-      const storageRef = ref(storage, name);
+      if (file) {
+        const storage = getStorage(app);
+        const name = new Date().getTime() + file.name;
+        const storageRef = ref(storage, name);
 
-      const uploadTask = uploadBytesResumable(storageRef, file);
+        const uploadTask = uploadBytesResumable(storageRef, file);
 
-      uploadTask.on(
-        "state_changed",
-        (snapshot) => {
-          const progress =
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          console.log("Upload is " + progress + "% done");
-        },
-        (error) => {
-          console.error("Error uploading image:", error);
-        },
-        async () => {
-          const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-          const quillEditor = document.querySelector(".ql-editor");
-          const range = quillEditor.selection;
-
-          // Insert image URL into the Quill editor
-          const quill = quillEditor.__quill;
-          quill.insertEmbed(range.index, "image", downloadURL);
-        }
-      );
+        uploadTask.on(
+          'state_changed',
+          (snapshot) => {
+            const progress =
+              (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            console.log('Upload is ' + progress + '% done');
+          },
+          (error) => {
+            console.error('Upload error:', error);
+          },
+          () => {
+            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+              const range = this.quill.getSelection();
+              this.quill.insertEmbed(range.index, 'image', downloadURL);
+            });
+          }
+        );
+      }
     };
   };
 
+  // Quill modules with custom image handler
   const modules = {
     toolbar: {
       container: [
         [{ font: [] }],
         [{ header: [1, 2, 3, 4, 5, 6, false] }],
-        ["bold", "italic", "underline", "strike", "blockquote"],
-        [{ list: "ordered" }, { list: "bullet" }],
+        ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+        [{ list: 'ordered' }, { list: 'bullet' }],
         [{ align: [] }],
-        ["link", "image", "video"],
+        ['link', 'image', 'video'],
         [{ color: [] }, { background: [] }],
-        [{ "code-block": true }],
-        ["clean"],
+        [{ 'code-block': true }],
+        ['clean'],
       ],
       handlers: {
-        image: imageHandler, // Custom image handler for uploading images
+        image: imageHandler, // Use custom image handler
       },
     },
   };
 
   const formats = [
-    "header",
-    "bold",
-    "italic",
-    "underline",
-    "strike",
-    "blockquote",
-    "list",
-    "bullet",
-    "align",
-    "link",
-    "image",
-    "video",
-    "code-block",
-    "color",
-    "background",
+    'header',
+    'bold',
+    'italic',
+    'underline',
+    'strike',
+    'blockquote',
+    'list',
+    'bullet',
+    'align',
+    'link',
+    'indent',
+    'image',
+    'video',
+    'code-block',
+    'color',
+    'background',
   ];
 
   return (
@@ -220,24 +230,6 @@ const WritePage = () => {
         <option value="Coding">Coding</option>
       </select>
       <div className={styles.editor}>
-        <button className={styles.button} onClick={() => setOpen(!open)}>
-          <CircleFadingPlusIcon width={30} height={30} />
-        </button>
-        {open && (
-          <div className={styles.add}>
-            <input
-              type="file"
-              id="image"
-              onChange={handleImageChange} // Update to use the new handler
-              style={{ display: "none" }}
-            />
-            <button className={styles.addButton}>
-              <label htmlFor="image">
-                <ImageIcon color="red" width={30} height={30} />
-              </label>
-            </button>
-          </div>
-        )}
         <ReactQuill
           className={styles.textArea}
           theme="snow"
@@ -260,4 +252,4 @@ const WritePage = () => {
 };
 
 export default WritePage;
-        
+  
