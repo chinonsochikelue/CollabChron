@@ -18,7 +18,6 @@ import { CircleFadingPlusIcon, ImageIcon, Loader } from "lucide-react";
 import dynamic from "next/dynamic";
 import toast from "react-hot-toast";
 
-// Import Quill dynamically to avoid SSR issues
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
 const WritePage = () => {
@@ -34,15 +33,14 @@ const WritePage = () => {
   const [selectedImage, setSelectedImage] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // Firebase file upload effect
   useEffect(() => {
     if (file) {
       const storage = getStorage(app);
       const name = new Date().getTime() + file.name;
       const storageRef = ref(storage, name);
-
+  
       const uploadTask = uploadBytesResumable(storageRef, file);
-
+  
       uploadTask.on(
         "state_changed",
         (snapshot) => {
@@ -58,7 +56,9 @@ const WritePage = () => {
               break;
           }
         },
-        (error) => {},
+        (error) => {
+          toast.error("Image upload failed.");
+        },
         () => {
           getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
             setMedia(downloadURL);
@@ -67,7 +67,7 @@ const WritePage = () => {
       );
     }
   }, [file]);
-
+  
   if (status === "loading") {
     return <div className={styles.loading}>Loading...</div>;
   }
@@ -76,7 +76,6 @@ const WritePage = () => {
     router.push("/");
   }
 
-  // Slugify title function
   const slugify = (str) =>
     str
       .toLowerCase()
@@ -98,7 +97,7 @@ const WritePage = () => {
           catSlug: catSlug || "News", // If not selected, choose the general category
         }),
       });
-
+  
       if (res.status === 200) {
         const data = await res.json();
         toast.success("Post published successfully!, Navigating to the created post");
@@ -125,11 +124,11 @@ const WritePage = () => {
     }
   };
 
-  // Custom image handler for uploading images to Firebase
+  // Custom image handler for Quill
   const imageHandler = () => {
-    const input = document.createElement('input');
-    input.setAttribute('type', 'file');
-    input.setAttribute('accept', 'image/*');
+    const input = document.createElement("input");
+    input.setAttribute("type", "file");
+    input.setAttribute("accept", "image/*");
     input.click();
 
     input.onchange = async () => {
@@ -138,67 +137,62 @@ const WritePage = () => {
         const storage = getStorage(app);
         const name = new Date().getTime() + file.name;
         const storageRef = ref(storage, name);
-
+        
         const uploadTask = uploadBytesResumable(storageRef, file);
 
         uploadTask.on(
-          'state_changed',
-          (snapshot) => {
-            const progress =
-              (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-            console.log('Upload is ' + progress + '% done');
-          },
+          "state_changed",
+          null,
           (error) => {
-            console.error('Upload error:', error);
+            console.error("Upload failed:", error);
           },
-          () => {
-            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-              const range = this.quill.getSelection();
-              this.quill.insertEmbed(range.index, 'image', downloadURL);
-            });
+          async () => {
+            const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+            const quill = document.querySelector(".ql-editor");
+            const range = quill.getSelection();
+            quill.editor.insertEmbed(range.index, "image", downloadURL);
           }
         );
       }
     };
   };
 
-  // Quill modules with custom image handler
   const modules = {
     toolbar: {
       container: [
         [{ font: [] }],
         [{ header: [1, 2, 3, 4, 5, 6, false] }],
-        ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-        [{ list: 'ordered' }, { list: 'bullet' }],
+        ["bold", "italic", "underline", "strike", "blockquote"],
+        [{ list: "ordered" }, { list: "bullet" }],
         [{ align: [] }],
-        ['link', 'image', 'video'],
+        ["link", "image", "video"],
         [{ color: [] }, { background: [] }],
-        [{ 'code-block': true }],
-        ['clean'],
+        [{ "code-block": true }],
+        ["clean"],
       ],
       handlers: {
-        image: imageHandler, // Use custom image handler
+        image: imageHandler, // Custom image handler for Firebase upload
       },
     },
   };
 
   const formats = [
-    'header',
-    'bold',
-    'italic',
-    'underline',
-    'strike',
-    'blockquote',
-    'list',
-    'bullet',
-    'align',
-    'link',
-    'indent',
-    'image',
-    'video',
-    'code-block',
-    'color',
-    'background',
+    "header",
+    "bold",
+    "italic",
+    "underline",
+    "strike",
+    "blockquote",
+    "list",
+    "bullet",
+    "align",
+    "link",
+    "indent",
+    "image",
+    "video",
+    "code-block",
+    "color",
+    "background",
   ];
 
   return (
@@ -230,6 +224,24 @@ const WritePage = () => {
         <option value="Coding">Coding</option>
       </select>
       <div className={styles.editor}>
+        <button className={styles.button} onClick={() => setOpen(!open)}>
+          <CircleFadingPlusIcon width={30} height={30} />
+        </button>
+        {open && (
+          <div className={styles.add}>
+            <input
+              type="file"
+              id="image"
+              onChange={handleImageChange} 
+              style={{ display: "none" }}
+            />
+            <button className={styles.addButton}>
+              <label htmlFor="image">
+                <ImageIcon color="red" width={30} height={30} />
+              </label>
+            </button>
+          </div>
+        )}
         <ReactQuill
           className={styles.textArea}
           theme="snow"
@@ -240,13 +252,13 @@ const WritePage = () => {
           formats={formats}
         />
       </div>
-      <button className={styles.publish} onClick={handleSubmit} disabled={loading}>
+      <button className={styles.publish} onClick={handleSubmit}  disabled={loading}>
         {loading ? (
           <Loader className="animate-spin" width={24} height={24} />
         ) : (
           "Publish"
         )}
-      </button>
+      </button>          
     </div>
   );
 };
