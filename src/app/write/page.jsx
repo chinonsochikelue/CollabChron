@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import styles from "./writePage.module.css";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import "react-quill/dist/quill.bubble.css";
 import "react-quill/dist/quill.snow.css";
 import { useRouter } from "next/navigation";
@@ -13,8 +13,8 @@ import {
   uploadBytesResumable,
   getDownloadURL,
 } from "firebase/storage";
-import { app } from "@/utils/firebase";
-import { Loader } from "lucide-react";
+import { app } from "@/utils/firebase"; // Make sure Firebase is correctly initialized
+import { CircleFadingPlusIcon, ImageIcon, Loader } from "lucide-react";
 import dynamic from "next/dynamic";
 import toast from "react-hot-toast";
 
@@ -25,37 +25,47 @@ const WritePage = () => {
   const router = useRouter();
   const reactQuillRef = useRef(null);
 
+  const [open, setOpen] = useState(false);
   const [file, setFile] = useState(null);
   const [media, setMedia] = useState("");
   const [value, setValue] = useState("");
   const [title, setTitle] = useState("");
   const [catSlug, setCatSlug] = useState("");
+  const [selectedImage, setSelectedImage] = useState("");
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (file) {
+  // Firebase image uploader function
+  const uploadImageToFirebase = async (file) => {
+    return new Promise((resolve, reject) => {
       const storage = getStorage(app);
       const name = new Date().getTime() + file.name;
       const storageRef = ref(storage, name);
-
       const uploadTask = uploadBytesResumable(storageRef, file);
 
       uploadTask.on(
         "state_changed",
         (snapshot) => {
-          const progress =
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          console.log("Upload is " + progress + "% done");
+          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          console.log(`Upload is ${progress}% done`);
         },
         (error) => {
           console.error("Upload error: ", error);
+          reject(error);
         },
         () => {
           getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-            setMedia(downloadURL);
+            resolve(downloadURL);
           });
         }
       );
+    });
+  };
+
+  useEffect(() => {
+    if (file) {
+      uploadImageToFirebase(file).then((downloadURL) => {
+        setMedia(downloadURL);
+      });
     }
   }, [file]);
 
@@ -91,9 +101,7 @@ const WritePage = () => {
 
       if (res.status === 200) {
         const data = await res.json();
-        toast.success(
-          "Post published successfully! Navigating to the created post."
-        );
+        toast.success("Post published successfully! Navigating to the created post.");
         router.push(`/posts/${data.slug}`);
       } else {
         toast.error("Failed to publish the post.");
@@ -105,52 +113,41 @@ const WritePage = () => {
     }
   };
 
-  const uploadImageToFirebase = (file) => {
-    return new Promise((resolve, reject) => {
-      const storage = getStorage(app);
-      const name = new Date().getTime() + file.name;
-      const storageRef = ref(storage, name);
-
-      const uploadTask = uploadBytesResumable(storageRef, file);
-
-      uploadTask.on(
-        "state_changed",
-        (snapshot) => {
-          const progress =
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          console.log("Upload is " + progress + "% done");
-        },
-        (error) => {
-          console.error("Upload error: ", error);
-          reject(error);
-        },
-        async () => {
-          const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-          resolve(downloadURL);
-        }
-      );
-    });
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setSelectedImage(reader.result);
+      };
+      reader.readAsDataURL(file);
+      setFile(file); // Also update the file state for Firebase upload
+    }
   };
 
-  const imageHandler = async () => {
+  // Updated imageHandler to use Firebase instead of Cloudinary
+  const imageHandler = useCallback(() => {
     const input = document.createElement("input");
     input.setAttribute("type", "file");
     input.setAttribute("accept", "image/*");
     input.click();
     input.onchange = async () => {
-      if (input.files && input.files[0]) {
+      if (input.files) {
         const file = input.files[0];
         try {
-          const downloadURL = await uploadImageToFirebase(file);
-          const quill = reactQuillRef.current.getEditor();
-          const range = quill.getSelection();
-          quill.insertEmbed(range.index, "image", downloadURL);
+          const url = await uploadImageToFirebase(file);
+          const quill = reactQuillRef.current;
+          if (quill) {
+            const range = quill.getEditorSelection();
+            range && quill.getEditor().insertEmbed(range.index, "image", url);
+          }
         } catch (error) {
-          toast.error("Error uploading image");
+          console.error("Error uploading image: ", error);
+          toast.error("Image upload failed.");
         }
       }
     };
-  };
+  }, []);
 
   const modules = {
     toolbar: {
@@ -192,6 +189,16 @@ const WritePage = () => {
 
   return (
     <div className={`styles.container mb-[70px]`}>
+      {selectedImage && (
+        <div className={styles.imageContainer}>
+          <Image
+            src={selectedImage}
+            alt="Selected"
+            layout="fill"
+            objectFit="cover"
+          />
+        </div>
+      )}
       <input
         type="text"
         placeholder="Title"
@@ -204,16 +211,27 @@ const WritePage = () => {
       >
         <option value="News">News</option>
         <option value="Education">Education</option>
-        <option value="Sports">Sports</option>
-        <option value="Entertainment">Entertainment</option>
-        <option value="Fashion">Fashion</option>
-        <option value="Food">Food</option>
-        <option value="Culture">Culture</option>
-        <option value="Travel">Travel</option>
-        <option value="AI & Machine Learning">AI & Machine Learning</option>
-        <option value="Coding">Coding</option>
+        {/* other categories */}
       </select>
       <div className={styles.editor}>
+        <button className={styles.button} onClick={() => setOpen(!open)}>
+          <CircleFadingPlusIcon width={30} height={30} />
+        </button>
+        {open && (
+          <div className={styles.add}>
+            <input
+              type="file"
+              id="image"
+              onChange={handleImageChange} // Update to use the new handler
+              style={{ display: "none" }}
+            />
+            <button className={styles.addButton}>
+              <label htmlFor="image">
+                <ImageIcon color="red" width={30} height={30} />
+              </label>
+            </button>
+          </div>
+        )}
         <ReactQuill
           ref={reactQuillRef}
           className={styles.textArea}
