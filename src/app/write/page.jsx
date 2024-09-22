@@ -23,6 +23,7 @@ const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 const WritePage = () => {
   const { status } = useSession();
   const router = useRouter();
+  const reactQuillRef = useRef<ReactQuill>(null);
 
   const [open, setOpen] = useState(false);
   const [file, setFile] = useState(null);
@@ -123,8 +124,45 @@ const WritePage = () => {
     }
   };
 
-  const modules = {
-    toolbar: [
+
+  const uploadToCloudinary = async (file: File): Promise<string> => {
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append(
+    "upload_preset",
+    collabchron
+  );
+  const res = await fetch(
+    `https://api.cloudinary.com/v1_1/dsjjnvpyn/upload`,
+    { method: "POST", body: formData }
+  );
+  const data = await res.json();
+  const url = data.url;
+
+  return url
+}
+
+    const imageHandler = useCallback(() => {
+    const input = document.createElement("input");
+    input.setAttribute("type", "file");
+    input.setAttribute("accept", "image/*");
+    input.click();
+    input.onchange = async () => {
+      if (input !== null && input.files !== null) {
+        const file = input.files[0];
+        const url = await uploadToCloudinary(file);
+        const quill = reactQuillRef.current;
+        if (quill) {
+          const range = quill.getEditorSelection();
+          range && quill.getEditor().insertEmbed(range.index, "image", url);
+        }
+      }
+    };
+  }, []);
+
+  const modules = {{
+    toolbar: {
+      container: [
       [{ font: [] }],
       [{ header: [1, 2, 3, 4, 5, 6, false] }],
       ["bold", "italic", "underline", "strike", "blockquote"],
@@ -135,7 +173,11 @@ const WritePage = () => {
       [{ "code-block": true }],
       ["clean"],
     ],
-  };
+          handlers: {
+            image: imageHandler,
+          },
+    },
+  }};
   const formats = [
     "header",
     "bold",
@@ -204,6 +246,7 @@ const WritePage = () => {
         </div>
       )}
       <ReactQuill
+        ref={reactQuillRef}
         className={styles.textArea}
         theme="snow"
         value={value}
