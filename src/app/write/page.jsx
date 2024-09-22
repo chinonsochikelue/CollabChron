@@ -213,7 +213,7 @@ const WritePage = () => {
         formats={formats}
       />
     </div>
-    <button className={styles.publish} onClick={handleSubmit}  disabled={loading}>
+    <button className={styles.publish} onClick={handleSubmit}  disabled={loading || !title || !value}>
     {loading ? (
           <Loader className="animate-spin" width={24} height={24} />
         ) : (
