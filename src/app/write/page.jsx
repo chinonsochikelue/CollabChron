@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import styles from "./writePage.module.css";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import "react-quill/dist/quill.bubble.css";
 import "react-quill/dist/quill.snow.css";
 import { useRouter } from "next/navigation";
@@ -23,7 +23,7 @@ const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 const WritePage = () => {
   const { status } = useSession();
   const router = useRouter();
-  const reactQuillRef = useRef<ReactQuill>(null);
+  const reactQuillRef = useRef(null);
 
   const [open, setOpen] = useState(false);
   const [file, setFile] = useState(null);
@@ -34,15 +34,14 @@ const WritePage = () => {
   const [selectedImage, setSelectedImage] = useState("");
   const [loading, setLoading] = useState(false);
 
-
   useEffect(() => {
     if (file) {
       const storage = getStorage(app);
       const name = new Date().getTime() + file.name;
       const storageRef = ref(storage, name);
-  
+
       const uploadTask = uploadBytesResumable(storageRef, file);
-  
+
       uploadTask.on(
         "state_changed",
         (snapshot) => {
@@ -58,7 +57,9 @@ const WritePage = () => {
               break;
           }
         },
-        (error) => {},
+        (error) => {
+          console.error("Upload error: ", error);
+        },
         () => {
           getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
             setMedia(downloadURL);
@@ -67,7 +68,7 @@ const WritePage = () => {
       );
     }
   }, [file]);
-  
+
   if (status === "loading") {
     return <div className={styles.loading}>Loading...</div>;
   }
@@ -84,33 +85,35 @@ const WritePage = () => {
       .replace(/[\s_-]+/g, "-")
       .replace(/^-+|-+$/g, "");
 
-      const handleSubmit = async () => {
-        setLoading(true); 
-        try {
-          const res = await fetch("/api/posts", {
-            method: "POST",
-            body: JSON.stringify({
-              title,
-              desc: value,
-              img: media,
-              slug: slugify(title),
-              catSlug: catSlug || "News", // If not selected, choose the general category
-            }),
-          });
-    
-          if (res.status === 200) {
-            const data = await res.json();
-            toast.success("Post published successfully!, Navigating to the created post");
-            router.push(`/posts/${data.slug}`);
-          } else {
-            toast.error("Failed to publish the post.");
-          }
-        } catch (error) {
-          toast.error("An error occurred while publishing the post."); 
-        } finally {
-          setLoading(false);
-        }
-      };
+  const handleSubmit = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch("/api/posts", {
+        method: "POST",
+        body: JSON.stringify({
+          title,
+          desc: value,
+          img: media,
+          slug: slugify(title),
+          catSlug: catSlug || "News", // Default category
+        }),
+      });
+
+      if (res.status === 200) {
+        const data = await res.json();
+        toast.success(
+          "Post published successfully! Navigating to the created post."
+        );
+        router.push(`/posts/${data.slug}`);
+      } else {
+        toast.error("Failed to publish the post.");
+      }
+    } catch (error) {
+      toast.error("An error occurred while publishing the post.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -124,31 +127,26 @@ const WritePage = () => {
     }
   };
 
+  const uploadToCloudinary = async (file) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", "collabchron");
 
-  const uploadToCloudinary = async (file: File): Promise<string> => {
-  const formData = new FormData();
-  formData.append("file", file);
-  formData.append(
-    "upload_preset",
-    collabchron
-  );
-  const res = await fetch(
-    `https://api.cloudinary.com/v1_1/dsjjnvpyn/upload`,
-    { method: "POST", body: formData }
-  );
-  const data = await res.json();
-  const url = data.url;
+    const res = await fetch(
+      `https://api.cloudinary.com/v1_1/dsjjnvpyn/upload`,
+      { method: "POST", body: formData }
+    );
+    const data = await res.json();
+    return data.url;
+  };
 
-  return url
-}
-
-    const imageHandler = useCallback(() => {
+  const imageHandler = useCallback(() => {
     const input = document.createElement("input");
     input.setAttribute("type", "file");
     input.setAttribute("accept", "image/*");
     input.click();
     input.onchange = async () => {
-      if (input !== null && input.files !== null) {
+      if (input.files) {
         const file = input.files[0];
         const url = await uploadToCloudinary(file);
         const quill = reactQuillRef.current;
@@ -160,24 +158,25 @@ const WritePage = () => {
     };
   }, []);
 
-  const modules = {{
+  const modules = {
     toolbar: {
       container: [
-      [{ font: [] }],
-      [{ header: [1, 2, 3, 4, 5, 6, false] }],
-      ["bold", "italic", "underline", "strike", "blockquote"],
-      [{ list: "ordered" }, { list: "bullet" }],
-      [{ align: [] }],
-      ["link", "image", "video"],
-      [{ color: [] }, { background: [] }],
-      [{ "code-block": true }],
-      ["clean"],
-    ],
-          handlers: {
-            image: imageHandler,
-          },
+        [{ font: [] }],
+        [{ header: [1, 2, 3, 4, 5, 6, false] }],
+        ["bold", "italic", "underline", "strike", "blockquote"],
+        [{ list: "ordered" }, { list: "bullet" }],
+        [{ align: [] }],
+        ["link", "image", "video"],
+        [{ color: [] }, { background: [] }],
+        [{ "code-block": true }],
+        ["clean"],
+      ],
+      handlers: {
+        image: imageHandler,
+      },
     },
-  }};
+  };
+
   const formats = [
     "header",
     "bold",
@@ -196,76 +195,83 @@ const WritePage = () => {
     "color",
     "background",
   ];
-  
 
   return (
-  <div className={`styles.container mb-[70px]`}>
-    {selectedImage && (
-      <div className={styles.imageContainer}>
-        <Image src={selectedImage} alt="Selected" layout="fill" objectFit="cover" />
-      </div>
-    )}
-    <input
-      type="text"
-      placeholder="Title"
-      className={styles.input}
-      onChange={(e) => setTitle(e.target.value)}
-    />
-    <select
-      className={styles.select}
-      onChange={(e) => setCatSlug(e.target.value)}
-    >
-      <option value="News">News</option>
-      <option value="Education">Education</option>
-      <option value="Sports">Sports</option>
-      <option value="Entertainment">Entertainment</option>
-      <option value="Fashion">Fashion</option>
-      <option value="Food">Food</option>
-      <option value="Culture">Culture</option>
-      <option value="Travel">Travel</option>
-      <option value="AI & Machine Learning">AI & Machine Learning</option>
-      <option value="Coding">Coding</option>
-    </select>
-    <div className={styles.editor}>
-      <button className={styles.button} onClick={() => setOpen(!open)}>
-        <CircleFadingPlusIcon width={30} height={30} />
-      </button>
-      {open && (
-        <div className={styles.add}>
-          <input
-            type="file"
-            id="image"
-            onChange={handleImageChange} // Update to use the new handler
-            style={{ display: "none" }}
+    <div className={`styles.container mb-[70px]`}>
+      {selectedImage && (
+        <div className={styles.imageContainer}>
+          <Image
+            src={selectedImage}
+            alt="Selected"
+            layout="fill"
+            objectFit="cover"
           />
-          <button className={styles.addButton}>
-            <label htmlFor="image">
-              <ImageIcon color="red" width={30} height={30} />
-            </label>
-          </button>
         </div>
       )}
-      <ReactQuill
-        ref={reactQuillRef}
-        className={styles.textArea}
-        theme="snow"
-        value={value}
-        onChange={setValue}
-        placeholder="Tell your story..."
-        modules={modules}
-        formats={formats}
+      <input
+        type="text"
+        placeholder="Title"
+        className={styles.input}
+        onChange={(e) => setTitle(e.target.value)}
       />
-    </div>
-    <button className={styles.publish} onClick={handleSubmit}  disabled={loading || !title || !value}>
-    {loading ? (
+      <select
+        className={styles.select}
+        onChange={(e) => setCatSlug(e.target.value)}
+      >
+        <option value="News">News</option>
+        <option value="Education">Education</option>
+        <option value="Sports">Sports</option>
+        <option value="Entertainment">Entertainment</option>
+        <option value="Fashion">Fashion</option>
+        <option value="Food">Food</option>
+        <option value="Culture">Culture</option>
+        <option value="Travel">Travel</option>
+        <option value="AI & Machine Learning">AI & Machine Learning</option>
+        <option value="Coding">Coding</option>
+      </select>
+      <div className={styles.editor}>
+        <button className={styles.button} onClick={() => setOpen(!open)}>
+          <CircleFadingPlusIcon width={30} height={30} />
+        </button>
+        {open && (
+          <div className={styles.add}>
+            <input
+              type="file"
+              id="image"
+              onChange={handleImageChange} // Update to use the new handler
+              style={{ display: "none" }}
+            />
+            <button className={styles.addButton}>
+              <label htmlFor="image">
+                <ImageIcon color="red" width={30} height={30} />
+              </label>
+            </button>
+          </div>
+        )}
+        <ReactQuill
+          ref={reactQuillRef}
+          className={styles.textArea}
+          theme="snow"
+          value={value}
+          onChange={setValue}
+          placeholder="Tell your story..."
+          modules={modules}
+          formats={formats}
+        />
+      </div>
+      <button
+        className={styles.publish}
+        onClick={handleSubmit}
+        disabled={loading || !title || !value}
+      >
+        {loading ? (
           <Loader className="animate-spin" width={24} height={24} />
         ) : (
           "Publish"
         )}
-    </button>
-  </div>
-);
-
+      </button>
+    </div>
+  );
 };
 
 export default WritePage;
