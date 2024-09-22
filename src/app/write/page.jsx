@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import styles from "./writePage.module.css";
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState, useRef } from "react";
 import "react-quill/dist/quill.bubble.css";
 import "react-quill/dist/quill.snow.css";
 import { useRouter } from "next/navigation";
@@ -14,7 +14,7 @@ import {
   getDownloadURL,
 } from "firebase/storage";
 import { app } from "@/utils/firebase";
-import { CircleFadingPlusIcon, ImageIcon, Loader } from "lucide-react";
+import { Loader } from "lucide-react";
 import dynamic from "next/dynamic";
 import toast from "react-hot-toast";
 
@@ -25,13 +25,11 @@ const WritePage = () => {
   const router = useRouter();
   const reactQuillRef = useRef(null);
 
-  const [open, setOpen] = useState(false);
   const [file, setFile] = useState(null);
   const [media, setMedia] = useState("");
   const [value, setValue] = useState("");
   const [title, setTitle] = useState("");
   const [catSlug, setCatSlug] = useState("");
-  const [selectedImage, setSelectedImage] = useState("");
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -48,14 +46,6 @@ const WritePage = () => {
           const progress =
             (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
           console.log("Upload is " + progress + "% done");
-          switch (snapshot.state) {
-            case "paused":
-              console.log("Upload is paused");
-              break;
-            case "running":
-              console.log("Upload is running");
-              break;
-          }
         },
         (error) => {
           console.error("Upload error: ", error);
@@ -115,48 +105,52 @@ const WritePage = () => {
     }
   };
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setSelectedImage(reader.result);
-      };
-      reader.readAsDataURL(file);
-      setFile(file); // Also update the file state for Firebase upload
-    }
+  const uploadImageToFirebase = (file) => {
+    return new Promise((resolve, reject) => {
+      const storage = getStorage(app);
+      const name = new Date().getTime() + file.name;
+      const storageRef = ref(storage, name);
+
+      const uploadTask = uploadBytesResumable(storageRef, file);
+
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          console.log("Upload is " + progress + "% done");
+        },
+        (error) => {
+          console.error("Upload error: ", error);
+          reject(error);
+        },
+        async () => {
+          const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+          resolve(downloadURL);
+        }
+      );
+    });
   };
 
-  const uploadToCloudinary = async (file) => {
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("upload_preset", "collabchron");
-
-    const res = await fetch(
-      `https://api.cloudinary.com/v1_1/dsjjnvpyn/upload`,
-      { method: "POST", body: formData }
-    );
-    const data = await res.json();
-    return data.url;
-  };
-
-  const imageHandler = useCallback(() => {
+  const imageHandler = async () => {
     const input = document.createElement("input");
     input.setAttribute("type", "file");
     input.setAttribute("accept", "image/*");
     input.click();
     input.onchange = async () => {
-      if (input.files) {
+      if (input.files && input.files[0]) {
         const file = input.files[0];
-        const url = await uploadToCloudinary(file);
-        const quill = reactQuillRef.current;
-        if (quill) {
-          const range = quill.getEditorSelection();
-          range && quill.getEditor().insertEmbed(range.index, "image", url);
+        try {
+          const downloadURL = await uploadImageToFirebase(file);
+          const quill = reactQuillRef.current.getEditor();
+          const range = quill.getSelection();
+          quill.insertEmbed(range.index, "image", downloadURL);
+        } catch (error) {
+          toast.error("Error uploading image");
         }
       }
     };
-  }, []);
+  };
 
   const modules = {
     toolbar: {
@@ -198,16 +192,6 @@ const WritePage = () => {
 
   return (
     <div className={`styles.container mb-[70px]`}>
-      {selectedImage && (
-        <div className={styles.imageContainer}>
-          <Image
-            src={selectedImage}
-            alt="Selected"
-            layout="fill"
-            objectFit="cover"
-          />
-        </div>
-      )}
       <input
         type="text"
         placeholder="Title"
@@ -230,24 +214,6 @@ const WritePage = () => {
         <option value="Coding">Coding</option>
       </select>
       <div className={styles.editor}>
-        <button className={styles.button} onClick={() => setOpen(!open)}>
-          <CircleFadingPlusIcon width={30} height={30} />
-        </button>
-        {open && (
-          <div className={styles.add}>
-            <input
-              type="file"
-              id="image"
-              onChange={handleImageChange} // Update to use the new handler
-              style={{ display: "none" }}
-            />
-            <button className={styles.addButton}>
-              <label htmlFor="image">
-                <ImageIcon color="red" width={30} height={30} />
-              </label>
-            </button>
-          </div>
-        )}
         <ReactQuill
           ref={reactQuillRef}
           className={styles.textArea}
