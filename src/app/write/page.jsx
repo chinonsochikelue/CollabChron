@@ -125,8 +125,7 @@ const WritePage = () => {
     }
   };
 
-  // Updated imageHandler to use Firebase instead of Cloudinary
-  const imageHandler = useCallback(() => {
+const imageHandler = useCallback(() => {
   const input = document.createElement("input");
   input.setAttribute("type", "file");
   input.setAttribute("accept", "image/*");
@@ -156,17 +155,23 @@ const WritePage = () => {
         () => {
           getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
             const quill = reactQuillRef.current;
-            const editor = quill.getEditor();
-            const range = editor.getSelection();
-            
-            editor.insertEmbed(range.index, "image", downloadURL); // Insert image in editor
-            toast.success("Image uploaded successfully!"); // Success toast
+
+            if (quill) {  // Check if quill is available
+              const editor = quill.getEditor();
+              const range = editor.getSelection();
+
+              editor.insertEmbed(range.index, "image", downloadURL); // Insert image in editor
+              toast.success("Image uploaded successfully!"); // Success toast
+            } else {
+              toast.error("Quill editor not available.");
+            }
           });
         }
       );
     }
   };
 }, []);
+
 
   const modules = {
     toolbar: {
@@ -252,15 +257,15 @@ const WritePage = () => {
           </div>
         )}
         <ReactQuill
-          ref={reactQuillRef}
-          className={styles.textArea}
-          theme="snow"
-          value={value}
-          onChange={setValue}
-          placeholder="Tell your story..."
-          modules={modules}
-          formats={formats}
-        />
+  ref={reactQuillRef} // Ensure the ref is attached here
+  className={styles.textArea}
+  theme="snow"
+  value={value}
+  onChange={setValue}
+  placeholder="Tell your story..."
+  modules={modules}
+  formats={formats}
+/>
       </div>
       <button
         className={styles.publish}
