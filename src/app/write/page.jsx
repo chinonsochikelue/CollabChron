@@ -100,7 +100,7 @@ const WritePage = () => {
           if (res.status === 200) {
             const data = await res.json();
             toast.success("Post published successfully!, Navigating to the created post");
-            router.push(`/posts/${data.slug}/${data.id}`);
+            router.push(`/posts/${data.slug}`);
           } else {
             toast.error("Failed to publish the post.");
           }
