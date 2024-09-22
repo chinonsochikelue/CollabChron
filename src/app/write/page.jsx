@@ -18,6 +18,7 @@ import { CircleFadingPlusIcon, ImageIcon, Loader } from "lucide-react";
 import dynamic from "next/dynamic";
 import toast from "react-hot-toast";
 
+// Dynamically import ReactQuill with SSR disabled
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
 const WritePage = () => {
@@ -35,31 +36,25 @@ const WritePage = () => {
 
   const quillRef = useRef(null); // Reference to React Quill
 
-  // Handle file upload to Firebase
+  // Firebase Upload Logic (remains unchanged)
   useEffect(() => {
     if (file) {
       const storage = getStorage(app);
       const name = new Date().getTime() + file.name;
       const storageRef = ref(storage, name);
-  
+
       const uploadTask = uploadBytesResumable(storageRef, file);
-  
+
       uploadTask.on(
         "state_changed",
         (snapshot) => {
           const progress =
             (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
           console.log("Upload is " + progress + "% done");
-          switch (snapshot.state) {
-            case "paused":
-              console.log("Upload is paused");
-              break;
-            case "running":
-              console.log("Upload is running");
-              break;
-          }
         },
-        (error) => {},
+        (error) => {
+          console.error("Upload error:", error);
+        },
         () => {
           getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
             setMedia(downloadURL);
@@ -154,7 +149,6 @@ const WritePage = () => {
           },
           () => {
             getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-              // Insert the image URL into the editor content
               const quill = quillRef.current.getEditor();
               const range = quill.getSelection(true);
               quill.insertEmbed(range.index, "image", downloadURL);
@@ -165,6 +159,7 @@ const WritePage = () => {
     };
   };
 
+  // ReactQuill modules with custom image handler
   const modules = {
     toolbar: {
       container: [
@@ -179,7 +174,7 @@ const WritePage = () => {
         ["clean"],
       ],
       handlers: {
-        image: handleImageUpload, // Use custom image upload handler
+        image: handleImageUpload,
       },
     },
   };
@@ -252,7 +247,7 @@ const WritePage = () => {
         )}
         <ReactQuill
           ref={quillRef}
-          className={styles.textArea}
+          className={`${styles.textArea} quill-editor`} // Added class name
           theme="snow"
           value={value}
           onChange={setValue}
