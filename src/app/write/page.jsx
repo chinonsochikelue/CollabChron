@@ -33,8 +33,14 @@ const WritePage = () => {
   const [catSlug, setCatSlug] = useState("");
   const [selectedImage, setSelectedImage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isMounted, setIsMounted] = useState(false); // Ensure client-side rendering
 
   const quillRef = useRef(null); // Reference to React Quill
+
+  // Ensure the component is mounted on the client side
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   // Firebase Upload Logic (remains unchanged)
   useEffect(() => {
@@ -245,16 +251,19 @@ const WritePage = () => {
             </button>
           </div>
         )}
-        <ReactQuill
-          ref={quillRef}
-          className={`${styles.textArea} quill-editor`} // Added class name
-          theme="snow"
-          value={value}
-          onChange={setValue}
-          placeholder="Tell your story..."
-          modules={modules}
-          formats={formats}
-        />
+        {/* Only render the editor when mounted */}
+        {isMounted && (
+          <ReactQuill
+            ref={quillRef}
+            className={`${styles.textArea} quill-editor`} // Added class name
+            theme="snow"
+            value={value}
+            onChange={setValue}
+            placeholder="Tell your story..."
+            modules={modules}
+            formats={formats}
+          />
+        )}
       </div>
       <button className={styles.publish} onClick={handleSubmit} disabled={loading}>
         {loading ? (
