@@ -127,27 +127,46 @@ const WritePage = () => {
 
   // Updated imageHandler to use Firebase instead of Cloudinary
   const imageHandler = useCallback(() => {
-    const input = document.createElement("input");
-    input.setAttribute("type", "file");
-    input.setAttribute("accept", "image/*");
-    input.click();
-    input.onchange = async () => {
-      if (input.files) {
-        const file = input.files[0];
-        try {
-          const url = await uploadImageToFirebase(file);
-          const quill = reactQuillRef.current;
-          if (quill) {
-            const range = quill.getEditorSelection();
-            range && quill.getEditor().insertEmbed(range.index, "image", url);
-          }
-        } catch (error) {
-          console.error("Error uploading image: ", error);
-          toast.error("Image upload failed.");
+  const input = document.createElement("input");
+  input.setAttribute("type", "file");
+  input.setAttribute("accept", "image/*");
+  input.click();
+
+  input.onchange = async () => {
+    if (input.files) {
+      const file = input.files[0];
+      
+      // Firebase Storage upload logic
+      const storage = getStorage(app);
+      const name = new Date().getTime() + file.name;
+      const storageRef = ref(storage, name);
+      const uploadTask = uploadBytesResumable(storageRef, file);
+
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          console.log("Upload is " + progress + "% done");
+        },
+        (error) => {
+          console.error("Upload error: ", error);
+          toast.error("Failed to upload the image."); // Add failure toast
+        },
+        () => {
+          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+            const quill = reactQuillRef.current;
+            const editor = quill.getEditor();
+            const range = editor.getSelection();
+            
+            editor.insertEmbed(range.index, "image", downloadURL); // Insert image in editor
+            toast.success("Image uploaded successfully!"); // Success toast
+          });
         }
-      }
-    };
-  }, []);
+      );
+    }
+  };
+}, []);
 
   const modules = {
     toolbar: {
