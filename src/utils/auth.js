@@ -20,6 +20,12 @@ export const authOptions = {
     signIn: "/login",
   },
   secret: process.env.NEXTAUTH_SECRET,
+  session: {
+    strategy: "jwt",
+  },
+  jwt: {
+    secret: process.env.JWT_SECRET,  // Ensure you have a valid JWT secret set
+  },
 };
 
 export const getAuthSession = () => getServerSession(authOptions);

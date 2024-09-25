@@ -59,7 +59,7 @@ const Banner = ({ post }) => {
             {parse(post?.desc.substring(0, 160) + "...")}
           </div>
           
-          <Link href={`/posts/${post?.slug}/}`} className="w-fit bg-[#24a0ed] dark:bg-blue-600 bg-opacity-20 px-4 py-1 rounded-full text-sm cursor-pointer " aria-label={`Read more about ${post?.title}`}>
+          <Link href={`/posts/${post?.slug}`} className="w-fit bg-[#24a0ed] dark:bg-blue-600 bg-opacity-20 px-4 py-1 rounded-full text-sm cursor-pointer " aria-label={`Read more about ${post?.title}`}>
             Read more...
           </Link>
 

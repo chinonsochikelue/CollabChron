@@ -82,7 +82,7 @@ const Card = ({ item }) => {
           </h1>
         </Link>
         {/* Render the HTML content stored by React Quill with options */}
-        <div className="flex-1 overflow-hidden text-slate-900 dark:text-slate-200 text-sm text-justify">
+        <div className="flex-1 text-slate-900 dark:text-slate-200 text-sm">
           {parse(item?.desc.substring(0, 260) + "...", options)}
         </div>
         <Link

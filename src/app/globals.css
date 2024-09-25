@@ -77,82 +77,6 @@ body {
   color: #fff;
 }
 
-.pagination-ellipsis {
-  padding: 0.5rem 1rem;
-  margin: 0 0.25rem;
-  cursor: not-allowed;
-  color: #ccc;
-}
-
-/* Loading CSS */
-.loading-container {
-  width: 100%;
-  height: 100vh;
-  background-color: #00000087;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  position: absolute;
-  z-index: 999;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-}
-
-.loading-inner {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background-color: #ffffff70;
-}
-
-.loading-wave {
-  width: 300px;
-  height: 100px;
-  display: flex;
-  justify-content: center;
-  align-items: flex-end;
-}
-
-.loading-bar {
-  width: 20px;
-  height: 10px;
-  margin: 0 5px;
-  background-color: rgb(225 29 72);
-  /* #3498db; */
-  border-radius: 5px;
-  animation: loading-wave-animation 1s ease-in-out infinite;
-}
-
-.loading-bar:nth-child(2) {
-  animation-delay: 0.1s;
-}
-
-.loading-bar:nth-child(3) {
-  animation-delay: 0.2s;
-}
-
-.loading-bar:nth-child(4) {
-  animation-delay: 0.3s;
-}
-
-@keyframes loading-wave-animation {
-  0% {
-    height: 10px;
-  }
-
-  50% {
-    height: 50px;
-  }
-
-  100% {
-    height: 10px;
-  }
-}
-
 
 pre {
   background-color: #2e2e2e; /* Dark background for code block */
@@ -212,7 +136,7 @@ code {
 .ql-editor img {
   display: flex;
   width: 90%; /* or any other desired width */
-  height: 50vh; /* maintain aspect ratio */
+  height: 40vh; /* maintain aspect ratio */
   border-radius: 8px; /* rounded corners */
   margin: 1rem; /* margin around the image */
   align-items: center;

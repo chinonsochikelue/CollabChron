@@ -117,7 +117,7 @@ export default async function Home({ searchParams }) {
       <div className="py-20 2xl:py-5">
         <Banner post={posts[randomIndex]} />
 
-        <div className="px-0 lg:pl-10 2xl:px-20">
+        <div className="px-0 lg:pl-10 2xl:px-10">
           <div className="mt-6 md:mt-0">
             <p className="text-2xl font-semibold text-gray-600 dark:text-white">
               Popular Categories

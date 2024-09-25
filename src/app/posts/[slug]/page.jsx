@@ -16,6 +16,7 @@ import { dracula } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { Toaster } from "react-hot-toast";
 import Share from "@/components/share";
 import Link from "next/link";
+import DeletePost from "@/components/deletePost/deletePost";
 
 export const dynamic = "force-dynamic";
 // Function to get post data from the database
@@ -116,7 +117,7 @@ export async function generateMetadata({ params }) {
 }
 
 
-// Main component for displaying the single post page
+
 const SinglePage = async ({ params }) => {
   const { slug } = params;
   const postData = await getPostData(slug);
@@ -128,36 +129,19 @@ const SinglePage = async ({ params }) => {
   const session = await getServerSession(authOptions);
   const isAuthor = session?.user?.email === postData.user?.email;
 
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "BlogPosting",
-    headline: postData.title,
-    description: postData.desc,
-    datePublished: new Date(postData.createdAt).toISOString(),
-    dateModified: new Date(
-      postData.updatedAt || postData.createdAt
-    ).toISOString(),
-    author: [
-      {
-        "@type": "Person",
-        name: postData.user?.name || "Chikelue Chinonso (fluantiX)",
-      },
-    ],
-  };
+  // Function to handle post deletion
 
-  const postUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/posts/${postData.slug}`;
+
+   const postUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/posts/${postData.slug}`;
 
   return (
     <>
-     <div className="w-full px-0 md:px-10 py-8 2xl:px-20">
+      <div className="w-full px-0 md:px-10 py-8 2xl:px-20">
         <Toaster
           position="top-center"
           reverseOrder={false}
           gutter={8}
-          containerClassName=""
-          containerStyle={{}}
           toastOptions={{
-            className: "",
             duration: 5000,
             style: {
               background: "#363636",
@@ -204,13 +188,16 @@ const SinglePage = async ({ params }) => {
                         </p>
                       </Link>
                       {isAuthor ? (
-                        <a
-                          href={`/edit-post/${postData.slug}/${postData.id}`}
-                          className="py-1 px-6 border bg-[#38ff38] rounded-3xl"
-                          aria-label="Edit Post"
-                        >
-                          Edit Post
-                        </a>
+                        <>
+                          <Link
+                            href={`/edit-post/${postData.slug}/${postData.id}`}
+                            className="py-1 px-6 border bg-[#38ff38] rounded-3xl"
+                            aria-label="Edit Post"
+                          >
+                            Edit Post
+                          </Link>
+                          <DeletePost post={postData}/>
+                        </>
                       ) : (
                         <>
                           <FollowButton
@@ -260,8 +247,8 @@ const SinglePage = async ({ params }) => {
               alt={postData.title}
               className="w-full md:w-1/2 h-auto md:h-[360px] 2xl:h-[460px] rounded object-contain"
               width={500}
-             height={500}
-             priority 
+              height={500}
+              priority 
             />
           )}
         </div>
