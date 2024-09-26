@@ -19,7 +19,7 @@ import Link from "next/link";
 import DeletePost from "@/components/deletePost/deletePost";
 
 export const dynamic = "force-dynamic";
-// Function to get post data from the database
+// Function to get post data
 const getPostData = async (slug) => {
   try {
     const post = await prisma.post.update({
