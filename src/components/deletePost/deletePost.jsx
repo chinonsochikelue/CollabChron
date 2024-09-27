@@ -47,6 +47,12 @@ const DeletePost = ({ post, onPostDeleted }) => {
           {loading ? "Deleting..." : "Delete Post"}
                           </div>
 
+        </button>
+        <button
+        onClick={() => setShowModal(true)}
+        disabled={loading}
+        className={`${loading ? "bg-gray-400" : "bg-red-500"}`}
+      >
                           {/* Delete Icon for smaller screens */}
                           <div className="inline-block md:hidden py-2 px-2 bg-red-500 rounded-full">
                      <TrashIcon size={24} color="#fff" />
