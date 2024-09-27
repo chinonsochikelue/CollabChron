@@ -1,7 +1,7 @@
 import dynamic from "next/dynamic";
 import styles from "./singlePage.module.css";
 import Image from "next/image";
-import { MailPlusIcon, EditIcon, TrashIcon } from "lucide-react";  // Import the edit and delete icons
+import { MailPlusIcon, EditIcon } from "lucide-react";  // Import the edit and delete icons
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/utils/auth";
 import prisma from "@/lib/prismadb";
@@ -208,14 +208,8 @@ const SinglePage = async ({ params }) => {
                             <EditIcon size={24} color="#fff" />
                           </Link>
 
-                          {/* Delete Button for larger screens */}
                           <div className="hidden md:inline-block">
                             <DeletePost post={postData} />
-                          </div>
-
-                          {/* Delete Icon for smaller screens */}
-                          <div className="inline-block md:hidden py-2 px-2 bg-red-500 rounded-full">
-                            <DeletePost post={postData} icon={<TrashIcon size={24} color="#fff" />} />
                           </div>
                         </>
                       ) : (
