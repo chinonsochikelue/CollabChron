@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
 import Modal from "./Modal";
+import { TrashIcon } from "lucide-react";
 
 const DeletePost = ({ post, onPostDeleted }) => {
   const [loading, setLoading] = useState(false);
