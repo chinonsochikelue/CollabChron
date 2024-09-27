@@ -40,12 +40,6 @@ const Share = dynamic(() => import("@/components/share"), {
   ssr: false,
 });
 
-<<<<<<< HEAD
-// Function to get post data from the database
-=======
-export const dynamic = "force-dynamic";
-// Function to get post data
->>>>>>> dec4ca86678f6242c7d726bc9857020a1ba66247
 const getPostData = async (slug) => {
   try {
     const post = await prisma.post.update({
