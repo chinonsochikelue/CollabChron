@@ -1,11 +1,7 @@
-import Menu from "@/components/Menu/Menu";
+import dynamic from "next/dynamic";
 import styles from "./singlePage.module.css";
 import Image from "next/image";
-import Comments from "@/components/comments/Comments";
-import FollowButton from "@/components/follow/followButton";
-import Tts from "@/components/tts/tts";
-import Clap from "@/components/clap/clap";
-import { MailPlusIcon } from "lucide-react";
+import { MailPlusIcon, EditIcon, TrashIcon } from "lucide-react";  // Import the edit and delete icons
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/utils/auth";
 import prisma from "@/lib/prismadb";
@@ -14,11 +10,36 @@ import parse, { domToReact } from "html-react-parser";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { dracula } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { Toaster } from "react-hot-toast";
-import Share from "@/components/share";
 import Link from "next/link";
 import DeletePost from "@/components/deletePost/deletePost";
+import SkeletonLoader from "@/components/SkeletonLoader";  // Import SkeletonLoader
 
-export const dynamic = "force-dynamic";
+// Dynamically import heavy components with skeleton loaders
+const Menu = dynamic(() => import("@/components/Menu/Menu"), {
+  loading: () => <SkeletonLoader />,
+  ssr: false,
+});
+const Comments = dynamic(() => import("@/components/comments/Comments"), {
+  loading: () => <SkeletonLoader />,
+  ssr: false,
+});
+const FollowButton = dynamic(() => import("@/components/follow/followButton"), {
+  loading: () => <SkeletonLoader />,
+  ssr: false,
+});
+const Tts = dynamic(() => import("@/components/tts/tts"), {
+  loading: () => <SkeletonLoader />,
+  ssr: false,
+});
+const Clap = dynamic(() => import("@/components/clap/clap"), {
+  loading: () => <SkeletonLoader />,
+  ssr: false,
+});
+const Share = dynamic(() => import("@/components/share"), {
+  loading: () => <SkeletonLoader />,
+  ssr: false,
+});
+
 // Function to get post data from the database
 const getPostData = async (slug) => {
   try {
@@ -33,16 +54,7 @@ const getPostData = async (slug) => {
   }
 };
 
-// Generate static params for Next.js
-export async function generateStaticParams() {
-  const posts = await prisma.post.findMany({
-    select: { slug: true },
-  });
-  return posts.map((post) => ({ slug: post.id }));
-}
-
-// Generate metadata for each post
-
+// Generate metadata for SEO
 export async function generateMetadata({ params }) {
   const { slug } = params;
   const postData = await getPostData(slug);
@@ -66,12 +78,10 @@ export async function generateMetadata({ params }) {
   const keywordsArray = [postData.title, postData.catSlug, postData.user.name];
   const keywords = keywordsArray.join(",");
 
-  // Use html-react-parser to parse and extract text from HTML
   const extractTextFromHtml = (html) => {
     let textContent = "";
     parse(html, {
       replace: (domNode) => {
-        // If the node is a text node, extract the text
         if (domNode.type === "text") {
           textContent += domNode.data;
         }
@@ -80,15 +90,12 @@ export async function generateMetadata({ params }) {
     return textContent;
   };
 
-  // Parse and extract text from post description
   const parsedDesc = extractTextFromHtml(postData.desc);
-
-  // Limit description length for SEO purposes
-  const metaDescription = parsedDesc.substring(0, 160); // Trim to 160 characters for SEO
+  const metaDescription = parsedDesc.substring(0, 160);
 
   return {
     title: postData.title,
-    description: metaDescription, // Use parsed text as description
+    description: metaDescription,
     keywords,
     openGraph: {
       title: postData.title,
@@ -106,17 +113,15 @@ export async function generateMetadata({ params }) {
       description: metaDescription,
       images: ogImages,
     },
-    canonical: `${process.env.NEXT_PUBLIC_SITE_URL}/posts/${postData.slug}`, // Canonical tag for SEO
+    canonical: `${process.env.NEXT_PUBLIC_SITE_URL}/posts/${postData.slug}`,
     alternates: {
       types: {
         "application/rss+xml": `${process.env.NEXT_PUBLIC_SITE_URL}/routes/rss`,
       },
     },
-    author: postData.user?.name || "Chinonso Chikelue (fluantiX)", // Fallback author name
+    author: postData.user?.name || "Chinonso Chikelue (fluantiX)",
   };
 }
-
-
 
 const SinglePage = async ({ params }) => {
   const { slug } = params;
@@ -129,26 +134,23 @@ const SinglePage = async ({ params }) => {
   const session = await getServerSession(authOptions);
   const isAuthor = session?.user?.email === postData.user?.email;
 
-  // Function to handle post deletion
-
-
-   const postUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/posts/${postData.slug}`;
+  const postUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/posts/${postData.slug}`;
 
   return (
     <>
+      <Toaster
+        position="top-center"
+        reverseOrder={false}
+        gutter={8}
+        toastOptions={{
+          duration: 5000,
+          style: {
+            background: "#363636",
+            color: "#fff",
+          },
+        }}
+      />
       <div className="w-full px-0 md:px-10 py-8 2xl:px-20">
-        <Toaster
-          position="top-center"
-          reverseOrder={false}
-          gutter={8}
-          toastOptions={{
-            duration: 5000,
-            style: {
-              background: "#363636",
-              color: "#fff",
-            },
-          }}
-        />
         <div className="w-full flex flex-col-reverse md:flex-row gap-2 gap-y-5 items-center">
           <div className="w-full md:w-1/2 flex flex-col gap-8">
             <h1 className="text-3xl md:text-5xl font-bold text-slate-800 dark:text-white">
@@ -177,7 +179,8 @@ const SinglePage = async ({ params }) => {
                       className="object-cover w-12 h-12 rounded-full"
                       width={45}
                       height={45}
-                      priority
+                      loading="lazy" // Lazy load for better performance
+                      priority={false}
                     />
                   </Link>
                   <div>
@@ -189,14 +192,32 @@ const SinglePage = async ({ params }) => {
                       </Link>
                       {isAuthor ? (
                         <>
+                          {/* Button for larger screens */}
                           <Link
                             href={`/edit-post/${postData.slug}/${postData.id}`}
-                            className="py-1 px-6 border bg-[#38ff38] rounded-3xl"
+                            className="hidden md:inline-block py-1 px-6 border bg-[#38ff38] rounded-3xl"
                             aria-label="Edit Post"
                           >
                             Edit Post
                           </Link>
-                          <DeletePost post={postData}/>
+                          {/* Icon for smaller screens */}
+                          <Link
+                            href={`/edit-post/${postData.slug}/${postData.id}`}
+                            className="inline-block md:hidden py-2 px-2 bg-[#38ff38] rounded-full"
+                            aria-label="Edit Post"
+                          >
+                            <EditIcon size={24} color="#fff" />
+                          </Link>
+
+                          {/* Delete Button for larger screens */}
+                          <div className="hidden md:inline-block">
+                            <DeletePost post={postData} />
+                          </div>
+
+                          {/* Delete Icon for smaller screens */}
+                          <div className="inline-block md:hidden py-2 px-2 bg-red-500 rounded-full">
+                            <DeletePost post={postData} icon={<TrashIcon size={24} color="#fff" />} />
+                          </div>
                         </>
                       ) : (
                         <>
@@ -248,14 +269,16 @@ const SinglePage = async ({ params }) => {
               className="w-full md:w-1/2 h-auto md:h-[360px] 2xl:h-[460px] rounded object-contain"
               width={500}
               height={500}
-              priority 
+              priority={false}
+              loading="lazy"
+              sizes="(max-width: 768px) 100vw, (min-width: 769px) 50vw"
             />
           )}
         </div>
 
         <div className="w-full flex flex-col md:flex-row gap-x-10 2xl:gap-x-28 mt-10">
           <div className="w-full md:w-2/3 flex flex-col text-black dark:text-gray-500">
-            <div className="leading-[3rem] text-base text-black dark:text-slate-400 ql-video ql-video iframe ql-editor img ql-h1 h1 ql-h2 h2 ql-h3 h3">
+            <div className="leading-[3rem] text-base text-black dark:text-slate-400 ql-editor">
               {parse(postData.desc, {
                 replace: (domNode) => {
                   if (
