@@ -6,6 +6,7 @@ import { useState } from "react";
 import { toast } from "react-hot-toast";
 import { Loader, TrashIcon } from "lucide-react";  // Import TrashIcon
 import Modal from "./Modal";
+import { TrashIcon } from "lucide-react";
 
 const DeletePost = ({ post, onPostDeleted }) => {
   const [loading, setLoading] = useState(false);
@@ -59,9 +60,17 @@ const DeletePost = ({ post, onPostDeleted }) => {
       <button
         onClick={() => setShowModal(true)}
         disabled={loading}
+<<<<<<< HEAD
         className={`hidden md:inline-block rounded-full py-2 px-4 text-white ${loading ? "bg-gray-400" : "bg-red-500"}`}
+=======
+>>>>>>> e48783a4075996a4180ecbddde49c364b6fdaf9c
       >
-        {loading ? "Deleting..." : "Delete Post"}
+        <div className={`hidden md:inline-block py-2 px-4 rounded-full ${loading ? "bg-gray-400" : "bg-red-500"}`}>
+          {loading ? "Deleting..." : "Delete Post"}
+                          </div>
+<div className="inline-block md:hidden py-2 px-2 bg-red-500 rounded-full">
+                     <TrashIcon size={24} color="#fff" />
+                          </div>
       </button>
 
 
