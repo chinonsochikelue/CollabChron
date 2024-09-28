@@ -1,5 +1,8 @@
 import Navbar from "@/components/navbar/Navbar";
 import "./globals.css";
+import '@mantine/tiptap/styles.css';
+import '@mantine/core/styles.css';
+import { MantineProvider } from '@mantine/core'
 import { Inter } from "next/font/google";
 import Footer from "@/components/footer/Footer";
 import AuthProvider from "@/providers/AuthProvider";
@@ -90,12 +93,14 @@ export default function RootLayout({ children }) {
               enableSystem
               disableTransitionOnChange
             >
+        <MantineProvider>
               <div>
                 <Toaster />
                 <Navbar />
                 <main>{children}</main>
                 <Footer />
               </div>
+              </MantineProvider>
             </ThemeProvider>
         </AuthProvider>
       </body>

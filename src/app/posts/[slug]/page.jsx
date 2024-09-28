@@ -1,7 +1,7 @@
 import dynamic from "next/dynamic";
 import styles from "./singlePage.module.css";
 import Image from "next/image";
-import { MailPlusIcon, EditIcon, TrashIcon } from "lucide-react";  // Import the edit and delete icons
+import { MailPlusIcon, EditIcon, TrashIcon } from "lucide-react";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/utils/auth";
 import prisma from "@/lib/prismadb";
@@ -40,12 +40,7 @@ const Share = dynamic(() => import("@/components/share"), {
   ssr: false,
 });
 
-<<<<<<< HEAD
 // Function to get post data from the database
-=======
-export const dynamic = "force-dynamic";
-// Function to get post data
->>>>>>> dec4ca86678f6242c7d726bc9857020a1ba66247
 const getPostData = async (slug) => {
   try {
     const post = await prisma.post.update({
@@ -59,7 +54,6 @@ const getPostData = async (slug) => {
   }
 };
 
-// Generate metadata for SEO
 export async function generateMetadata({ params }) {
   const { slug } = params;
   const postData = await getPostData(slug);
@@ -184,7 +178,7 @@ const SinglePage = async ({ params }) => {
                       className="object-cover w-12 h-12 rounded-full"
                       width={45}
                       height={45}
-                      loading="lazy" // Lazy load for better performance
+                      loading="lazy"
                       priority={false}
                     />
                   </Link>
@@ -205,24 +199,21 @@ const SinglePage = async ({ params }) => {
                           >
                             Edit Post
                           </Link>
-                          {/* Icon for smaller screens */}
+                          {/* Icon for smaller screens with tooltip */}
                           <Link
                             href={`/edit-post/${postData.slug}/${postData.id}`}
-                            className="inline-block md:hidden py-2 px-2 bg-[#38ff38] rounded-full"
+                            className="relative group inline-block md:hidden py-2 px-2 bg-[#38ff38] rounded-full"
                             aria-label="Edit Post"
                           >
                             <EditIcon size={24} color="#fff" />
+                            {/* Tooltip */}
+                            <span className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-max opacity-0 group-hover:opacity-100 transition-opacity bg-gray-800 text-white text-xs rounded py-1 px-2">
+                              Edit Post
+                            </span>
                           </Link>
 
-                          {/* Delete Button for larger screens */}
-                          <div className="hidden md:inline-block">
                             <DeletePost post={postData} />
-                          </div>
 
-                          {/* Delete Icon for smaller screens */}
-                          <div className="inline-block md:hidden py-2 px-2 bg-red-500 rounded-full">
-                            <DeletePost post={postData} icon={<TrashIcon size={24} color="#fff" />} />
-                          </div>
                         </>
                       ) : (
                         <>
@@ -283,27 +274,8 @@ const SinglePage = async ({ params }) => {
 
         <div className="w-full flex flex-col md:flex-row gap-x-10 2xl:gap-x-28 mt-10">
           <div className="w-full md:w-2/3 flex flex-col text-black dark:text-gray-500">
-            <div className="leading-[3rem] text-base text-black dark:text-slate-400 ql-editor">
-              {parse(postData.desc, {
-                replace: (domNode) => {
-                  if (
-                    domNode.name === "pre" &&
-                    domNode.children[0]?.name === "code"
-                  ) {
-                    const language =
-                      domNode.attribs.class?.replace("language-", "") ||
-                      "javascript";
-                    const codeContent = domToReact(
-                      domNode.children[0].children
-                    ).join("");
-                    return (
-                      <SyntaxHighlighter language={language} style={dracula}>
-                        {codeContent}
-                      </SyntaxHighlighter>
-                    );
-                  }
-                },
-              })}
+            <div>
+              {parse(postData.desc)}
             </div>
             <div className="w-full px-0 md:px-10 py-8 2xl:px-20">
               <Share
