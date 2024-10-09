@@ -60,10 +60,7 @@ const DeletePost = ({ post, onPostDeleted }) => {
       <button
         onClick={() => setShowModal(true)}
         disabled={loading}
-<<<<<<< HEAD
         className={`hidden md:inline-block rounded-full py-2 px-4 text-white ${loading ? "bg-gray-400" : "bg-red-500"}`}
-=======
->>>>>>> e48783a4075996a4180ecbddde49c364b6fdaf9c
       >
         <div className={`hidden md:inline-block py-2 px-4 rounded-full ${loading ? "bg-gray-400" : "bg-red-500"}`}>
           {loading ? "Deleting..." : "Delete Post"}
