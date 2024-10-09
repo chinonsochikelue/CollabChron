@@ -6,7 +6,6 @@ import { useState } from "react";
 import { toast } from "react-hot-toast";
 import { Loader, TrashIcon } from "lucide-react";  // Import TrashIcon
 import Modal from "./Modal";
-import { TrashIcon } from "lucide-react";
 
 const DeletePost = ({ post, onPostDeleted }) => {
   const [loading, setLoading] = useState(false);
