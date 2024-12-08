@@ -34,7 +34,7 @@ const PopularAuthorPage = async () => {
   }
 
   return (
-    <div className="mt-[35px] mb-[60px] gap-[35px] flex flex-row justify-evenly xl:flex-col">
+    <div className="mt-[35px] mb-[60px] gap-[35px] flex flex-col md:flex-row justify-evenly xl:flex-col">
       {authors.map((author) => (
         <div key={author.id} className={styles.item}>
           {author.image && (
