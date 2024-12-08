@@ -59,8 +59,9 @@ const Card = ({ item }) => {
           />
         ) : (
           <Image
-            src="https://www.dropbox.com/scl/fi/1nji3jnur7f5lwabqynz8/No-image-available-2.jpg?rlkey=ppox3crisw5w4joda1l2j8a00&dl=0"
-            alt={item.title || 'Post image'}
+            src="https://dl.dropboxusercontent.com/scl/fi/1nji3jnur7f5lwabqynz8/No-image-available-2.jpg?rlkey=ppox3crisw5w4joda1l2j8a00
+"
+            alt="No image available"
             className="object-cover w-full h-full rounded"
             width={800}
             height={800}
