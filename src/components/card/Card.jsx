@@ -58,9 +58,8 @@ const Card = ({ item }) => {
             priority
           />
         ) : (
-          <Image
-            src="https://dl.dropboxusercontent.com/scl/fi/1nji3jnur7f5lwabqynz8/No-image-available-2.jpg?rlkey=ppox3crisw5w4joda1l2j8a00
-"
+      <Image
+   src="https://dl.dropboxusercontent.com/scl/fi/1nji3jnur7f5lwabqynz8/No-image-available-2.jpg?rlkey=ppox3crisw5w4joda1l2j8a00"
             alt="No image available"
             className="object-cover w-full h-full rounded"
             width={800}
