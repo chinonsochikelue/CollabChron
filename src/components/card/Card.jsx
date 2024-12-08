@@ -58,9 +58,14 @@ const Card = ({ item }) => {
             priority
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center bg-gray-200 rounded">
-            <span className="text-gray-500">No image available</span>
-          </div>
+          <Image
+            src="https://crawfordroofing.com.au/wp-content/uploads/2018/04/No-image-available-2.jpg"
+            alt={item.title || 'Post image'}
+            className="object-cover w-full h-full rounded"
+            width={800}
+            height={800}
+            priority
+          />
         )}
       </div>
       <div className="w-full md:w-2/4 flex flex-col gap-3">
