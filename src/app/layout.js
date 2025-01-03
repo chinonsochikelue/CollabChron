@@ -87,7 +87,7 @@ export default function RootLayout({ children }) {
     <html lang="en" className="scroll-smooth" suppressHydrationWarning>
       <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID} />
       <body
-        className={`${inter.className} w-full min-h-screen dark:bg-[#020b19] bg-white`}
+        className={`${inter.className} w-full min-h-screen dark:text-white text-slate-800 dark:bg-[#020b19] bg-white`}
       >
         <AuthProvider>
             <ThemeProvider
