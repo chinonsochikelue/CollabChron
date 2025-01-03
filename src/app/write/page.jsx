@@ -119,7 +119,7 @@ const WritePage = () => {
           desc: editor.getHTML(),
           img: media,
           slug: slugify(title),
-          catSlug: catSlug || "News",
+          catSlug: catSlug || "LIFESTYLE",
         }),
       });
 
@@ -177,7 +177,7 @@ const WritePage = () => {
               defaultValue={"NEWS"}
               className="w-full flex-1 text-black dark:text-white"
               placeholder="Pick Category"
-              data={["NEWS", "SPORTS", "CODING", "EDUCATION", "FASHION"]}
+              data={["CHEMISTRY", "PHYSICS", "SPORTS", "PROGRAMMING", "EDUCATION", "LIFESTYLE"]}
               onChange={(val) => setCatSlug(val)}
             />
           </div>
