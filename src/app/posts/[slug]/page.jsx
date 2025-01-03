@@ -275,7 +275,7 @@ const SinglePage = async ({ params }) => {
         <div className="w-full flex flex-col md:flex-row gap-x-10 2xl:gap-x-28 mt-10">
           <div className="w-full md:w-2/3 flex flex-col text-black dark:text-gray-500">
           <div
-            className="prose prose-lg max-w-none text-slate-800 dark:text-white"
+            className="prose prose-lg max-w-none text-white dark:text-white"
             dangerouslySetInnerHTML={{ __html: postData.desc }}
           />
             <div className="w-full px-0 md:px-10 py-8 2xl:px-20">
