@@ -45,7 +45,7 @@ const getPostData = async (slug) => {
   try {
     const post = await prisma.post.update({
       where: { slug },
-      data: { views: { increment: 0 } },
+      data: { views: { increment: -1 } },
       include: { user: true },
     });
     return post;
