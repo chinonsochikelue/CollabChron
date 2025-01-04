@@ -16,7 +16,7 @@ export const metadata = {
   metadataBase: new URL('https://www.collabchron.com.ng'),
   title: {
     default: "Collaboration Chronology",
-    template: "%s - Collaboration Chronology",
+    template: "%s - CollabChron",
   },
   description:
     "CollabChron is a dynamic multi-author blog platform where writers and readers connect. Discover diverse perspectives, share your voice, and explore captivating stories on topics ranging from technology and lifestyle to culture and beyond.",
@@ -29,7 +29,7 @@ export const metadata = {
   robots: {
     index: true,
     follow: true,
-    nocache: true,
+    nocache: false,
     googleBot: {
       index: true,
       follow: true,
