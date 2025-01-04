@@ -8,7 +8,7 @@ export const GET = async ({ params }) => {
   try {
     const post = await prisma.post.update({
       where: { slug },
-      data: { views },
+      data: { views: { increment: 1 } },
       include: { user: true },
     });
 
