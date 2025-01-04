@@ -86,7 +86,7 @@ export const POST_CLAP = async (req) => {
       // Increment clap count if it exists
       clap = await prisma.clap.update({
         where: { id: clap.id },
-        data: { clapCount: { increment: 1 } },
+        data: { clapCount: { increment: 0 } },
       });
     } else {
       // Create a new clap if it does not exist
