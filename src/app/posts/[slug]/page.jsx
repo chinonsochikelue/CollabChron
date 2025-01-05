@@ -1,4 +1,5 @@
 import dynamic from "next/dynamic";
+import { cookies } from 'next/headers'; // Import Next.js cookies API
 import styles from "./singlePage.module.css";
 import Image from "next/image";
 import { MailPlusIcon, EditIcon, TrashIcon } from "lucide-react";
@@ -42,18 +43,36 @@ const Share = dynamic(() => import("@/components/share"), {
 
 // Function to get post data from the database
 const getPostData = async (slug) => {
-  try {
+  const cookiesStore = cookies(); // Access cookies
+  const hasViewed = cookiesStore.get(`post_${slug}_viewed`);
+
+  if (!hasViewed) {
+    // Increment views if the cookie does not exist
     const post = await prisma.post.update({
       where: { slug },
-      data: { views: { $inc: 1 } },
+      data: { views: { increment: 1 } },
       include: { user: true },
     });
+
+    // Set the cookie to prevent another increment
+    cookiesStore.set(`post_${slug}_viewed`, 'true', {
+      httpOnly: true,
+      maxAge: 24 * 60 * 60, // Expires in 1 day (24 hours)
+      path: '/',
+    });
+
     return post;
-  } catch (error) {
-    return null;
+  } else {
+    // Fetch post data without incrementing views
+    return prisma.post.findUnique({
+      where: { slug },
+      include: { user: true },
+    });
   }
 };
 
+export default getPostData;
+  
 export async function generateMetadata({ params }) {
   const { slug } = params;
   const postData = await getPostData(slug);
