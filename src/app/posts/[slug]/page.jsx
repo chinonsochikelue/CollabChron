@@ -71,7 +71,6 @@ const getPostData = async (slug) => {
   }
 };
 
-export default getPostData;
   
 export async function generateMetadata({ params }) {
   const { slug } = params;
