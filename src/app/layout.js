@@ -9,6 +9,8 @@ import AuthProvider from "@/providers/AuthProvider";
 import { ThemeProvider } from "@/providers/theme-provider";
 import { Toaster } from "react-hot-toast";
 import { GoogleAnalytics } from '@next/third-parties/google';
+import GoogleAdsense from "../components/GoogleAdsense";
+
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -86,6 +88,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className="scroll-smooth" suppressHydrationWarning>
       <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID} />
+  <GoogleAdsense pId={process.env.NEXT_PUBLIC_GOOGLE_ADSENSE_ID} />
       <body
         className={`${inter.className} w-full min-h-screen dark:text-white text-slate-800 dark:bg-[#020b19] bg-white`}
       >
