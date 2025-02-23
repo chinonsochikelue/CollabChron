@@ -1,1 +1,4 @@
-
+.prose span {
+    color: inherit !important;
+  }
+  

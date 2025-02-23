@@ -4,6 +4,11 @@
 @tailwind components;
 @tailwind utilities;
 
+.prose span {
+  color: inherit !important;
+  background-color: inherit !important;
+}
+
 @layer base{
  /* .h1 {
   @apply text-[98px] xl:text-[80px] leading-[1.1] font-semibold;

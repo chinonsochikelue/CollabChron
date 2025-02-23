@@ -55,7 +55,7 @@ const Banner = ({ post }) => {
             </h1>
           </Link>
 
-          <div className="flex-1 overflow-hidden text-sm text-justify">
+          <div className="prose prose-lg flex-1 overflow-hidden text-sm text-justify dark:prose-dark">
             {parse(post?.desc.substring(0, 160) + "...")}
           </div>
           

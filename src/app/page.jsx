@@ -2,69 +2,38 @@ import styles from "./homepage.module.css";
 import Banner from "@/components/Banner/Banner";
 import CardList from "@/components/cardList/CardList";
 import Menu from "@/components/Menu/Menu";
-import { BsCodeSlash, BsFillAirplaneFill, BsNewspaper, BsPerson } from "react-icons/bs";
-import { MdBrush, MdCastForEducation, MdOutlineSportsHandball } from "react-icons/md";
-import { GiClothes, GiDramaMasks, GiPizzaSlice } from "react-icons/gi";
+import { BsCodeSlash, BsNewspaper, BsPerson } from "react-icons/bs";
+import { MdCastForEducation } from "react-icons/md";
 import Link from "next/link";
 
 // Define categories
 const CATEGORIES = [
   {
-    label: "News",
+    label: "NEWS",
     color: "bg-[#e11d48]", // Red
     text: "text-[#fff]",
     icon: <BsNewspaper />,
   },
   {
-    label: "Sports",
-    color: "bg-[#2563eb]", // Blue
-    icon: <MdOutlineSportsHandball />,
-  },
-  {
-    label: "Coding",
-    color: "bg-[#000000]", // Black
+    label: "TECHNOLOGY",
+    color: "bg-[#1e90ff]", // Blue
     icon: <BsCodeSlash />,
   },
   {
-    label: "Education",
+    label: "EDUCATION",
     color: "bg-[#ca8a04]", // Orange
     icon: <MdCastForEducation />,
   },
   {
-    label: "Fashion",
-    color: "bg-[#9333ea]", // Purple
-    icon: <GiClothes />,
-  },
-  {
-    label: "Drama",
-    color: "bg-[#9d174d]", // Dark Red
-    icon: <GiDramaMasks />,
-  },
-  {
-    label: "Culture",
-    color: "bg-[#6b21a8]", // Darker Purple
-    icon: <MdBrush />,
-  },
-  {
-    label: "Style",
-    color: "bg-[#d946ef]", // Pink
+    label: "LIFESTYLE",
+    color: "bg-[#ff6f61]", // Red
     icon: <BsPerson />,
-  },
-  {
-    label: "Travel",
-    color: "bg-[#0284c7]", // Light Blue
-    icon: <BsFillAirplaneFill />,
-  },
-  {
-    label: "Food",
-    color: "bg-[#eab308]", // Yellow
-    icon: <GiPizzaSlice />,
   },
 ];
 
 // Function to fetch posts data
 const getData = async () => {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL; 
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL;
 
   const res = await fetch(`${baseUrl}/api/post`, {
     cache: "no-store",
@@ -84,7 +53,7 @@ export async function generateJsonLd() {
     "@context": "https://schema.org",
     "@type": "WebSite",
     "url": process.env.NEXT_PUBLIC_SITE_URL,
-    "name": "Collaboration Chronology",
+    "name": "CollabChron",
     "description": "Welcome to the home page of our blog, where you can explore a variety of categories and posts.",
     "potentialAction": {
       "@type": "SearchAction",
