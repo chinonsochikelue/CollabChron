@@ -117,7 +117,7 @@ const Navbar = () => {
           )}
         </div>
       </nav>
-      <Menu menu={menu} />
+      <Menu menu={menu} setMenu={setMenu} />
     </header>
   );
 };

@@ -6,27 +6,37 @@ import SunIcon from "@/assets/svgs/sunicon.svg";
 import MoonIcon from "@/assets/svgs/moonicon.svg";
 import Image from "next/image";
 
-const Button = () => {
+const Button = ({ setMenu }) => {
   const { systemTheme, theme, setTheme } = useTheme();
   const currentTheme = theme === 'system' ? systemTheme : theme;
 
+
+
+  const handleClick = () => {
+    if (currentTheme === "dark") {
+      setTheme('light');
+    } else {
+      setTheme('dark');
+    }
+    setMenu(false); // Close the menu
+  };
   return (
     <button
-      onClick={() => currentTheme === "dark" ? setTheme('light') : setTheme("dark")}
+      onClick={handleClick}
       className='transition-all duration-100 text-white px-8 py-2 text-2xl md:text-4xl rounded-lg bottom-32'
     >
       {currentTheme === "dark" ? (
-       <Image
+        <Image
           src={SunIcon}
           alt="Sun Icon"
           className="hover:scale-125 transition-all ease duration-200 fill-current text-yellow-500 dark:text-yellow-400"
-       />
+        />
       ) : (
         <Image
           src={MoonIcon}
           alt="Moon Icon"
-         className="hover:scale-125 transition-all ease duration-200 fill-current text-gray-800 dark:text-gray-300"
-       />
+          className="hover:scale-125 transition-all ease duration-200 fill-current text-gray-800 dark:text-gray-300"
+        />
       )}
     </button>
   );
