@@ -1,14 +1,12 @@
 import dynamic from "next/dynamic";
 import styles from "./singlePage.module.css";
 import Image from "next/image";
-import { MailPlusIcon, EditIcon, TrashIcon } from "lucide-react";
+import { MailPlusIcon, EditIcon } from "lucide-react";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/utils/auth";
 import prisma from "@/lib/prismadb";
 import NotFound from "@/app/_404";
-import parse, { domToReact } from "html-react-parser";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { dracula } from "react-syntax-highlighter/dist/esm/styles/prism";
+import parse from "html-react-parser";
 import { Toaster } from "react-hot-toast";
 import Link from "next/link";
 import DeletePost from "@/components/deletePost/deletePost";

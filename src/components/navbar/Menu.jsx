@@ -3,8 +3,10 @@ import { AnimatePresence, motion } from "framer-motion";
 import Button from "@/providers/ThemeToggle";
 import AuthLinks from "../authLinks/AuthLinks";
 import Link from "next/link";
+import { signOut, useSession } from "next-auth/react";
 
 export default function Menu({ menu, setMenu }) {
+  const { status, data: session } = useSession();
   const menus = [
     {
       title: "Home",
@@ -20,6 +22,9 @@ export default function Menu({ menu, setMenu }) {
     },
   ];
 
+  console.log("STATIS", status
+    ? "authenticated"
+    : "unauthenticated");
   return (
     <AnimatePresence>
       {menu && (
@@ -42,7 +47,18 @@ export default function Menu({ menu, setMenu }) {
               </Link>
             ))}
             <AuthLinks setMenu={setMenu} />
-            <div className="flex justify-end">
+            <div className="flex justify-between items-center">
+              {status === "authenticated" ? (
+                <button setMenu={setMenu}
+                  onClick={() => {
+                    signOut();
+                    setMenu(false);
+                  }}
+                >
+                  Logout
+                </button>
+              ) : null}
+
               <Button setMenu={setMenu} />
             </div>
           </ul>
