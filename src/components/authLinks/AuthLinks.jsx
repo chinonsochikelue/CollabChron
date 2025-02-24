@@ -29,7 +29,12 @@ const AuthLinks = ({ setMenu }) => {
               height={40}
               className="rounded-full"
             />
-            <p className="ml-2">{session?.user?.name}</p>
+            <p className="ml-2">
+              {session?.user?.name.length > 10
+                ? session?.user?.name.slice(0, 10) + "..."
+                : session?.user?.name}
+            </p>
+
           </div>
           <Link href="/write" className="cursor-pointer" onClick={() => setMenu(false)}>
             Write
