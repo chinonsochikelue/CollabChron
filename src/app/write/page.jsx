@@ -20,6 +20,8 @@ import { CircleFadingPlusIcon, ImageIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import SkeletonLoader from "@/components/SkeletonLoader";
+import { Image as TipTapImages } from "@tiptap/extension-image"; // Import Image extension
+import { Dropzone } from '@mantine/dropzone';
 import {
   getStorage,
   ref,
@@ -34,10 +36,29 @@ import Image from "next/image";
 const lowlight = createLowlight();
 lowlight.register({ ts });
 
+
+export const CustomImage = TipTapImages.extend({
+  addAttributes() {
+    return {
+      ...this.parent?.(),
+      class: {
+        default: 'custom-image', // Add a default class
+      },
+      style: {
+        default: null,
+        parseHTML: (element) => element.getAttribute('style'), // Allow inline styles
+        renderHTML: (attributes) => {
+          return { style: attributes.style };
+        },
+      },
+    };
+  },
+});
+
 const WritePage = () => {
   const { status } = useSession();
   const router = useRouter();
-
+  const [isUploading, setIsUploading] = useState(false);
   const [isPreview, setIsPreview] = useState(false); // New state for preview mode
   const [file, setFile] = useState(null);
   const [media, setMedia] = useState("");
@@ -55,7 +76,7 @@ const WritePage = () => {
       Link,
       Superscript,
       SubScript,
-      Image,
+      CustomImage,
       Highlight,
       TextStyle,
       Color,
@@ -149,6 +170,48 @@ const WritePage = () => {
     }
   };
 
+  // Function to handle image drop/upload
+  const addImageToEditor = async (imageFile) => {
+    setIsUploading(true);
+    const storage = getStorage(app);
+    const name = new Date().getTime() + imageFile.name;
+    const storageRef = ref(storage, name);
+
+    const uploadTask = uploadBytesResumable(storageRef, imageFile);
+
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {
+        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        console.log("Upload is " + progress + "% done");
+      },
+      (error) => {
+        console.error("Upload error:", error);
+        setIsUploading(false);
+      },
+      () => {
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+          const inlineStyles = `
+          display: block;
+          max-width: 100%;
+          height: auto;
+          border-radius: 12px;
+          margin: 10px auto;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+          transition: transform 0.3s ease;
+          margin-bottom: 10px;
+        `;
+          editor.chain().focus().setImage({
+            src: downloadURL,
+            style: inlineStyles,
+          }).run(); // Add image to editor
+          setMedia(downloadURL);
+          setIsUploading(false);
+        });
+      }
+    );
+  };
+
   return (
     <>
       {/* Toggle Button for Preview */}
@@ -216,6 +279,7 @@ const WritePage = () => {
               </div>
             )}
           </div>
+
           <RichTextEditor editor={editor}>
             {editor && (
               <BubbleMenu editor={editor}>
@@ -278,9 +342,27 @@ const WritePage = () => {
                 <RichTextEditor.Highlight />
               </RichTextEditor.ControlsGroup>
 
-              <RichTextEditor.ControlsGroup>
-                <RichTextEditor.CodeBlock />
-              </RichTextEditor.ControlsGroup>
+
+              <div className="flex items-center border border-gray-200 pl-2 pr-2 rounded-md justify-between gap-2">
+                <RichTextEditor.ControlsGroup>
+                  <Dropzone
+                    loading={isUploading}
+                    onDrop={(files) => addImageToEditor(files[0])} // Handle image drop
+                    accept={["image/jpeg", "image/png", "image/jpg", "image/gif"]}
+                    multiple={false}
+                    //maxSize={10240} // 10MB
+                    onReject={(files) => {
+                      toast.error("Unsupported format.", {
+                        duration: 3000,
+                      });
+                    }}
+                  >
+                    <ImageIcon width={27} height={27} color="gray" className="cursor-pointer" />
+                  </Dropzone>
+                  <RichTextEditor.CodeBlock />
+                </RichTextEditor.ControlsGroup>
+              </div>
+
 
               <RichTextEditor.ControlsGroup>
                 <RichTextEditor.H1 />

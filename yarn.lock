@@ -741,6 +741,13 @@
     react-textarea-autosize "8.5.6"
     type-fest "^4.27.0"
 
+"@mantine/dropzone@^7.17.0":
+  version "7.17.0"
+  resolved "https://registry.yarnpkg.com/@mantine/dropzone/-/dropzone-7.17.0.tgz#9c0ce360143939cefd52bd1d334f106cc65a88f3"
+  integrity sha512-1BGOH/Fs1xxsVl6JUxFAElwqdmtj1nrzc7QSV3vs3xh7zAIAH6wqeor8j8+yycxz4lCfehHSaVAyDDv3AFsX8w==
+  dependencies:
+    react-dropzone-esm "15.2.0"
+
 "@mantine/hooks@^7.13.0":
   version "7.17.0"
   resolved "https://registry.yarnpkg.com/@mantine/hooks/-/hooks-7.17.0.tgz#2e199092075f81b737c92fd5ecc7260b61701327"
@@ -1094,7 +1101,7 @@
   resolved "https://registry.yarnpkg.com/@tiptap/extension-horizontal-rule/-/extension-horizontal-rule-2.11.5.tgz#b876f606386c51bc2ff45d4bd26267f5b104a850"
   integrity sha512-3up2r1Du8/5/4ZYzTC0DjTwhgPI3dn8jhOCLu73m5F3OGvK/9whcXoeWoX103hYMnGDxBlfOje71yQuN35FL4A==
 
-"@tiptap/extension-image@^2.7.4":
+"@tiptap/extension-image@^2.11.5":
   version "2.11.5"
   resolved "https://registry.yarnpkg.com/@tiptap/extension-image/-/extension-image-2.11.5.tgz#f16d05c8045dc7d84d85efdbb946a2a8713fb2d3"
   integrity sha512-HbUq9AL8gb8eSuQfY/QKkvMc66ZFN/b6jvQAILGArNOgalUfGizoC6baKTJShaExMSPjBZlaAHtJiQKPaGRHaA==
@@ -1818,7 +1825,7 @@ cross-fetch@^3.0.4:
   dependencies:
     node-fetch "^2.7.0"
 
-cross-spawn@^7.0.0, cross-spawn@^7.0.2:
+cross-spawn@^7.0.2, cross-spawn@^7.0.6:
   version "7.0.6"
   resolved "https://registry.yarnpkg.com/cross-spawn/-/cross-spawn-7.0.6.tgz#8a58fe78f00dcd70c370451759dfbfaf03e8ee9f"
   integrity sha512-uV2QOWP2nWzsy2aMp8aRibhi9dlzF5Hgh5SHaB9OiTGEyDTiJJyx0uy51QXdyWbtAHNua4XJzUKca3OzKUd3vA==
@@ -2666,11 +2673,11 @@ for-each@^0.3.3:
     is-callable "^1.2.7"
 
 foreground-child@^3.1.0:
-  version "3.3.0"
-  resolved "https://registry.yarnpkg.com/foreground-child/-/foreground-child-3.3.0.tgz#0ac8644c06e431439f8561db8ecf29a7b5519c77"
-  integrity sha512-Ld2g8rrAyMYFXBhEqMz8ZAHBi4J4uS1i/CxGMDnjyFWddMXLVcDp051DZfu+t7+ab7Wv6SMqpWmyFIj5UbfFvg==
+  version "3.3.1"
+  resolved "https://registry.yarnpkg.com/foreground-child/-/foreground-child-3.3.1.tgz#32e8e9ed1b68a3497befb9ac2b6adf92a638576f"
+  integrity sha512-gIXjKqtFuWEgzFRJA9WCQeSJLZDjgJUOMCMzxtvFq/37KojM1BFGufqsCy0r4qSQmYLsZYMeyRqzIWOMup03sw==
   dependencies:
-    cross-spawn "^7.0.0"
+    cross-spawn "^7.0.6"
     signal-exit "^4.0.1"
 
 format@^0.2.0:
@@ -4293,6 +4300,13 @@ react-draft-wysiwyg@^1.15.0:
     html-to-draftjs "^1.5.0"
     linkify-it "^2.2.0"
     prop-types "^15.7.2"
+
+react-dropzone-esm@15.2.0:
+  version "15.2.0"
+  resolved "https://registry.yarnpkg.com/react-dropzone-esm/-/react-dropzone-esm-15.2.0.tgz#a2bf703796f083282fe98429ae01a2cdd761aa2a"
+  integrity sha512-pPwR8xWVL+tFLnbAb8KVH5f6Vtl397tck8dINkZ1cPMxHWH+l9dFmIgRWgbh7V7jbjIcuKXCsVrXbhQz68+dVA==
+  dependencies:
+    prop-types "^15.8.1"
 
 react-hot-toast@^2.4.1:
   version "2.5.2"

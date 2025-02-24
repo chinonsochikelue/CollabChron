@@ -4,7 +4,6 @@
     "private": true,
     "scripts": {
         "dev": "next dev",
-        "postinstall": "prisma generate",
         "build": "next build",
         "start": "next start",
         "lint": "next lint"
@@ -16,6 +15,7 @@
         "@fortawesome/free-solid-svg-icons": "^6.6.0",
         "@fortawesome/react-fontawesome": "^0.2.2",
         "@mantine/core": "^7.13.0",
+        "@mantine/dropzone": "^7.17.0",
         "@mantine/hooks": "^7.13.0",
         "@mantine/tiptap": "^7.13.0",
         "@next/third-parties": "^14.2.7",
@@ -27,7 +27,7 @@
         "@tiptap/extension-code-block-lowlight": "^2.7.4",
         "@tiptap/extension-color": "^2.7.4",
         "@tiptap/extension-highlight": "^2.7.4",
-        "@tiptap/extension-image": "^2.7.4",
+        "@tiptap/extension-image": "^2.11.5",
         "@tiptap/extension-link": "^2.7.4",
         "@tiptap/extension-list-item": "^2.7.4",
         "@tiptap/extension-placeholder": "^2.7.4",
