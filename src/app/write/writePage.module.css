@@ -58,20 +58,6 @@
   left: 50px;
 }
 
-.input{
-  padding: 50px;
-  font-size: 55px;
-  border: none;
-  outline: none;
-  background-color: transparent;
-  color: var(--textColor);
-}
-
-.textArea {
-  width: 100%;
-  border-radius: 5px;
-  margin-bottom: 100px;
-}
 
 .publish{
   position: absolute;
