@@ -423,10 +423,7 @@ const WritePage = () => {
               </RichTextEditor.ControlsGroup>
             </RichTextEditor.Toolbar>
 
-            <RichTextEditor.Content
-              className="py-8"
-              style={{ height: "200px", overflowY: "auto" }}
-            />
+            <RichTextEditor.Content/>
           </RichTextEditor>
         </>
       ) : (
