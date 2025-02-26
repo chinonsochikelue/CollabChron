@@ -29,7 +29,7 @@ import {
   getDownloadURL,
 } from "firebase/storage";
 import { app } from "@/utils/firebase";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import toast from "react-hot-toast";
 import Image from "next/image";
 
@@ -66,6 +66,13 @@ const WritePage = () => {
   const [catSlug, setCatSlug] = useState("");
   const [selectedImage, setSelectedImage] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const openRef = useRef(null);
+  const dropzoneRef = useRef(null);
+
+  useEffect(() => {
+    dropzoneRef.current?.focus();
+  }, []);
 
   const editor = useEditor({
     extensions: [
@@ -297,6 +304,22 @@ const WritePage = () => {
                   <RichTextEditor.H1 />
                   <RichTextEditor.H2 />
                   <RichTextEditor.BulletList />
+                  <Dropzone
+                    openRef={openRef}
+                    //loading={isUploading}
+                    onDrop={(files) => addImageToEditor(files[0])} // Handle image drop
+                    accept={["image/jpeg", "image/png", "image/jpg", "image/gif"]}
+                    multiple={false}
+                    ref={dropzoneRef}
+                    maxSize={512000} // 10MB
+                    onReject={(files) => {
+                      toast.error("Unsupported format.", {
+                        duration: 3000,
+                      });
+                    }}
+                  >
+                    <ImageIcon width={27} height={27} color="gray" className="cursor-pointer" />
+                  </Dropzone>
                 </RichTextEditor.ControlsGroup>
               </FloatingMenu>
             )}
@@ -346,10 +369,12 @@ const WritePage = () => {
               <div className="flex items-center border border-gray-200 pl-2 pr-2 rounded-md justify-between gap-2">
                 <RichTextEditor.ControlsGroup>
                   <Dropzone
+                    openRef={openRef}
                     loading={isUploading}
                     onDrop={(files) => addImageToEditor(files[0])} // Handle image drop
                     accept={["image/jpeg", "image/png", "image/jpg", "image/gif"]}
                     multiple={false}
+                    ref={dropzoneRef}
                     //maxSize={10240} // 10MB
                     onReject={(files) => {
                       toast.error("Unsupported format.", {
