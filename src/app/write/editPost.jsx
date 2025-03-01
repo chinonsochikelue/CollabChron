@@ -32,6 +32,9 @@ import { app } from "@/utils/firebase";
 import { useState, useEffect, useRef } from "react";
 import toast from "react-hot-toast";
 import Image from "next/image";
+import dynamic from "next/dynamic";
+
+const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
 const lowlight = createLowlight();
 lowlight.register({ ts });
@@ -55,9 +58,10 @@ export const CustomImage = TipTapImages.extend({
   },
 });
 
-const WritePage = () => {
+const EditPostForm = ({ post }) => {
   const { status } = useSession();
   const router = useRouter();
+
   const [isUploading, setIsUploading] = useState(false);
   const [isPreview, setIsPreview] = useState(false); // New state for preview mode
   const [file, setFile] = useState(null);
@@ -71,10 +75,6 @@ const WritePage = () => {
 
   const openRef = useRef(null);
   const dropzoneRef = useRef(null);
-
-  useEffect(() => {
-    dropzoneRef.current?.focus();
-  }, []);
 
   const editor = useEditor({
     extensions: [
@@ -121,6 +121,10 @@ const WritePage = () => {
     }
   }, [file]);
 
+  if (status === "loading") {
+    return <div className={styles.loading}>Loading...</div>;
+  }
+
   if (status === "loading") return <SkeletonLoader />;
   if (status === "unauthenticated") {
     router.push("/");
@@ -136,34 +140,36 @@ const WritePage = () => {
       .replace(/^-+|-+$/g, "");
 
   const handleSubmit = async () => {
-    if (!file || !title) {
-      toast.error("All fields are required");
-      return;
-    }
     setLoading(true);
     try {
-      const res = await fetch("/api/posts", {
-        method: "POST",
+      const baseUrl = process.env.NEXT_PUBLIC_SITE_URL; 
+      const res = await fetch(`${baseUrl}/api/posts/${post?.slug}/${post?.id}`, {
+        method: "PUT",
         body: JSON.stringify({
           title,
+          desc: value,
           keywords,
           postDesc,
-          desc: editor.getHTML(),
           img: media,
           slug: slugify(title),
-          catSlug: catSlug || "NEWS", 
+          catSlug: catSlug || "News",
         }),
+        headers: {
+          "Content-Type": "application/json",
+        },
       });
 
       if (res.status === 200) {
         const data = await res.json();
-        toast.success("Post published successfully!");
-        router.push(`/posts/${data.slug}`);
+        toast.success(
+          "Post updated successfully!, Navigating to the updated post"
+        );
+        router.push(`${baseUrl}/posts/${data?.slug}`);
       } else {
-        toast.error("Failed to publish the post.");
+        toast.error("Failed to update this post.");
       }
     } catch (error) {
-      toast.error("An error occurred while publishing the post.");
+      toast.error("An error occurred while updatinging this post.");
     } finally {
       setLoading(false);
     }
@@ -181,62 +187,62 @@ const WritePage = () => {
     }
   };
 
-  // Function to handle image drop/upload
-  const addImageToEditor = async (imageFile) => {
-    setIsUploading(true);
-    const storage = getStorage(app);
-    const name = new Date().getTime() + imageFile.name;
-    const storageRef = ref(storage, name);
-
-    const uploadTask = uploadBytesResumable(storageRef, imageFile);
-
-    uploadTask.on(
-      "state_changed",
-      (snapshot) => {
-        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        console.log("Upload is " + progress + "% done");
-      },
-      (error) => {
-        console.error("Upload error:", error);
-        setIsUploading(false);
-      },
-      () => {
-        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-          const inlineStyles = `
-          display: block;
-          max-width: 100%;
-          height: auto;
-          border-radius: 12px;
-          margin: 10px auto;
-          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-          transition: transform 0.3s ease;
-          margin-bottom: 10px;
-        `;
-          editor.chain().focus().setImage({
-            src: downloadURL,
-            style: inlineStyles,
-          }).run(); // Add image to editor
-          setMedia(downloadURL);
+    // Function to handle image drop/upload
+    const addImageToEditor = async (imageFile) => {
+      setIsUploading(true);
+      const storage = getStorage(app);
+      const name = new Date().getTime() + imageFile.name;
+      const storageRef = ref(storage, name);
+  
+      const uploadTask = uploadBytesResumable(storageRef, imageFile);
+  
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          console.log("Upload is " + progress + "% done");
+        },
+        (error) => {
+          console.error("Upload error:", error);
           setIsUploading(false);
-        });
-      }
-    );
-  };
+        },
+        () => {
+          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+            const inlineStyles = `
+            display: block;
+            max-width: 100%;
+            height: auto;
+            border-radius: 12px;
+            margin: 10px auto;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            margin-bottom: 10px;
+          `;
+            editor.chain().focus().setImage({
+              src: downloadURL,
+              style: inlineStyles,
+            }).run(); // Add image to editor
+            setMedia(downloadURL);
+            setIsUploading(false);
+          });
+        }
+      );
+    };
+
 
   return (
-    <>
-      <div className="mb-4 flex justify-between">
-        <h2 className="text-lg font-bold text-slate-500 dark:text-white">
-          {isPreview ? "Preview Mode" : "Edit Mode"}
-        </h2>
-        <Button onClick={() => setIsPreview(!isPreview)}>
-          {isPreview ? "Switch to Edit" : "Switch to Preview"}
-        </Button>
-      </div>
-
-      {!isPreview ? (
-        <>
-          <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-5 mb-8">
+    <div className={styles.container}>
+      {selectedImage && (
+        <div className={styles.imageContainer}>
+          <Image
+            src={selectedImage}
+            alt="Selected"
+            layout="fill"
+            objectFit="cover"
+          />
+        </div>
+      )}
+      <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-5 mb-8">
             <TextInput
               withAsterisk
               label="Post title"
@@ -279,42 +285,27 @@ const WritePage = () => {
             />
           </div>
 
-          {/* Image Preview */}
-          {selectedImage && (
-            <div className={styles.imageContainer}>
-              <Image
-                src={selectedImage}
-                alt="Selected"
-                layout="fill"
-                objectFit="cover"
-              />
-            </div>
-          )}
-
-          <div className={styles.editor}>
-            <button className={styles.button} onClick={() => setOpen(!open)}>
-              <CircleFadingPlusIcon width={30} height={30} />
+      <div className={styles.editor}>
+        <button className={styles.button} onClick={() => setOpen(!open)}>
+           <CircleFadingPlusIcon width={30} height={30} />
+       </button>
+        {open && (
+          <div className={styles.add}>
+            <input
+              type="file"
+              id="image"
+              onChange={handleImageChange}
+              style={{ display: "none" }}
+            />
+            <button className={styles.addButton}>
+              <label htmlFor="image">
+                <ImageIcon color="red" width={30} height={30} />
+            </label>
             </button>
-            {open && (
-              <div className={styles.add}>
-                <input
-                  type="file"
-                  id="image"
-                  data-max-size="5120"
-                  accept=".jpg, .png, .jpeg"
-                  onChange={handleImageChange} // Update to use the new handler
-                  style={{ display: "none" }}
-                />
-                <button className={styles.addButton}>
-                  <label htmlFor="image">
-                    <ImageIcon color="red" width={30} height={30} />
-                  </label>
-                </button>
-              </div>
-            )}
           </div>
+        )}
 
-          <RichTextEditor
+        <RichTextEditor
             editor={editor}
             className="bg-white dark:bg-[#020b19] rounded-lg border border-slate-300 dark:border-[#1f2b3d] shadow-md"
           >
@@ -457,29 +448,8 @@ const WritePage = () => {
 
             <RichTextEditor.Content className="w-full prose-lg text-black prose-invert" />
           </RichTextEditor>
-        </>
-      ) : (
-        <div className="bg-gray-100 dark:bg-[#020b19] p-4 rounded-md">
-          {/* Preview mode: Render the HTML generated by the editor */}
-          <h2 className="text-2xl font-bold mb-4">{title}</h2>
-          {selectedImage && (
-            <div className="relative w-full h-64 mt-4 rounded-md">
-              <Image
-                src={selectedImage}
-                className={styles.imageContainer}
-                alt="Post Image"
-                layout="fill"
-                objectFit="cover"
-              />
-            </div>
-          )}
-          <div
-            className="prose prose-lg dark:prose-dark max-w-none text-slate-900 dark:text-slate-200"
-            dangerouslySetInnerHTML={{ __html: editor.getHTML() }}
-          />
-        </div>
-      )}
-
+      </div>
+      
       <div className="w-full flex items-end justify-end mt-6">
         <Button
           className="bg-blue-600 disabled:bg-gray-500"
@@ -489,8 +459,8 @@ const WritePage = () => {
           {loading ? "Publishing" : "Publish"}
         </Button>
       </div>
-    </>
+    </div>
   );
 };
 
-export default WritePage;
+export default EditPostForm;
