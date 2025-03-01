@@ -25,6 +25,7 @@ module.exports = {
             strong: { color: theme("colors.slate.800") },
             em: { color: theme("colors.slate.800") },
             blockquote: { color: theme("colors.slate.800") },
+            a: { color: theme("colors.blue.400") },
             span: { color: "inherit" }, // added span styling
           },
         },
@@ -37,6 +38,7 @@ module.exports = {
             strong: { color: theme("colors.white") },
             em: { color: theme("colors.white") },
             blockquote: { color: theme("colors.white") },
+            a: { color: theme("colors.blue.400") },
             span: { color: "inherit" }, // added span styling for dark mode
           },
         },

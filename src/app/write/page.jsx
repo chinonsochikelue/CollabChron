@@ -1,5 +1,5 @@
 "use client";
-import { Button, Select, TextInput } from "@mantine/core";
+import { Button, Select, Textarea, TextInput } from "@mantine/core";
 import styles from "./writePage.module.css";
 import { Link, RichTextEditor } from "@mantine/tiptap";
 import { IconColorPicker } from "@tabler/icons-react";
@@ -63,6 +63,8 @@ const WritePage = () => {
   const [file, setFile] = useState(null);
   const [media, setMedia] = useState("");
   const [title, setTitle] = useState("");
+  const [keywords, setKeywords] = useState("");
+  const [postDesc, setPostDesc] = useState("");
   const [catSlug, setCatSlug] = useState("");
   const [selectedImage, setSelectedImage] = useState("");
   const [loading, setLoading] = useState(false);
@@ -144,6 +146,8 @@ const WritePage = () => {
         method: "POST",
         body: JSON.stringify({
           title,
+          keywords,
+          postDesc,
           desc: editor.getHTML(),
           img: media,
           slug: slugify(title),
@@ -221,7 +225,6 @@ const WritePage = () => {
 
   return (
     <>
-      {/* Toggle Button for Preview */}
       <div className="mb-4 flex justify-between">
         <h2 className="text-lg font-bold text-slate-500 dark:text-white">
           {isPreview ? "Preview Mode" : "Edit Mode"}
@@ -233,21 +236,45 @@ const WritePage = () => {
 
       {!isPreview ? (
         <>
-          <div className="w-full  flex flex-col md:flex-row flex-wrap gap-5 mb-8">
+          <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-5 mb-8">
             <TextInput
               withAsterisk
               label="Post title"
+
               className="w-full flex-1 text-black dark:text-white"
               placeholder="Post title"
               defaultValue={title}
               onChange={(e) => setTitle(e.target.value)}
             />
+
+            <TextInput
+              withAsterisk
+              label=" keywords"
+              className="w-full flex-1 text-black dark:text-white"
+              placeholder="keywords, separated by commas, e.g. news, tech, lifestyle"
+              defaultValue={keywords}
+              onChange={(e) => setKeywords(e.target.value)}
+            />
+
+            <Textarea
+              withAsterisk
+              autosize
+              minRows={2}
+              maxRows={4}
+              size="md"
+              label="Post Description"
+              className="w-full flex-1 text-black dark:text-white"
+              placeholder="Post Description, e.g. This is a post about..."
+              defaultValue={postDesc}
+              onChange={(e) => setPostDesc(e.target.value)}
+            />
+
             <Select
               label="Category"
               defaultValue={"NEWS"}
-              className="w-full flex-1 text-black dark:text-white"
+              className="w-full flex-1 text-black"
               placeholder="Pick Category"
-              data={["CHEMISTRY", "PHYSICS", "SPORTS", "PROGRAMMING", "EDUCATION", "LIFESTYLE"]}
+              data={["NEWS", "TECHNOLOGY", "LIFESTYLE", "EDUCATION"]}
               onChange={(val) => setCatSlug(val)}
             />
           </div>
@@ -287,7 +314,12 @@ const WritePage = () => {
             )}
           </div>
 
-          <RichTextEditor editor={editor}>
+          <RichTextEditor
+            editor={editor}
+            className="bg-white dark:bg-[#020b19] rounded-lg border border-slate-300 dark:border-[#1f2b3d] shadow-md"
+          >
+
+
             {editor && (
               <BubbleMenu editor={editor}>
                 <RichTextEditor.ControlsGroup>
@@ -423,7 +455,7 @@ const WritePage = () => {
               </RichTextEditor.ControlsGroup>
             </RichTextEditor.Toolbar>
 
-            <RichTextEditor.Content/>
+            <RichTextEditor.Content className="w-full prose-lg text-black prose-invert" />
           </RichTextEditor>
         </>
       ) : (

@@ -57,6 +57,7 @@ export async function generateMetadata({ params }) {
   const { slug } = params;
   const postData = await getPostData(slug);
 
+
   if (!postData) {
     return {
       title: "Post Not Found",
@@ -73,31 +74,16 @@ export async function generateMetadata({ params }) {
   const ogImages = postData.img ? [{ url: postData.img }] : [];
   const authors = postData.user?.name ? [postData.user.name] : [];
 
-  const keywordsArray = [postData.title, postData.catSlug, postData.user.name];
-  const keywords = keywordsArray.join(",");
-
-  const extractTextFromHtml = (html) => {
-    let textContent = "";
-    parse(html, {
-      replace: (domNode) => {
-        if (domNode.type === "text") {
-          textContent += domNode.data;
-        }
-      },
-    });
-    return textContent;
-  };
-
-  const parsedDesc = extractTextFromHtml(postData.desc);
-  const metaDescription = parsedDesc.substring(0, 160);
+  const keywordsArray = [postData?.keywords, postData?.title, postData?.catSlug, postData?.user.name, "CollabChron"];
+  const keywords = keywordsArray.join(", ");
 
   return {
     title: postData.title,
-    description: metaDescription,
-    keywords,
+    description: postData.postDesc,
+    keywords: keywords,
     openGraph: {
       title: postData.title,
-      description: metaDescription,
+      description: postData.postDesc,
       url: `${process.env.NEXT_PUBLIC_SITE_URL}/posts/${postData.slug}`,
       type: "article",
       publishedTime: publishedAt,
@@ -108,7 +94,7 @@ export async function generateMetadata({ params }) {
     twitter: {
       card: "summary_large_image",
       title: postData.title,
-      description: metaDescription,
+      description: postData.postDesc,
       images: ogImages,
     },
     canonical: `${process.env.NEXT_PUBLIC_SITE_URL}/posts/${postData.slug}`,
@@ -133,6 +119,7 @@ const SinglePage = async ({ params }) => {
   const isAuthor = session?.user?.email === postData.user?.email;
 
   const postUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/posts/${postData.slug}`;
+
 
   return (
     <>

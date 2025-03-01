@@ -85,6 +85,7 @@ model Post {
   updatedAt DateTime  @updatedAt
   slug      String    @unique
   title     String
+  postDesc  String?
   desc      String
   img       String?
   views     Int       @default(0)
@@ -95,6 +96,7 @@ model Post {
   Clap      Clap[]
   Comments  Comment[]
   Save      Save[]
+  keywords  String?
 }
 
 model Comment {

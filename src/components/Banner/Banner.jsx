@@ -14,7 +14,7 @@ const Banner = ({ post }) => {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
     "headline": post?.title,
-    "description": post?.desc.substring(0, 160),
+    "description": post?.postDesc || post?.desc.substring(0, 160),
     "image": post?.img,
     "datePublished": new Date(post?.createdAt).toISOString(),
     "author": {

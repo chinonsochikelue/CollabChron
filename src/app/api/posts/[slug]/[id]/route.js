@@ -13,13 +13,15 @@ export async function PUT(request, { params }) {
     return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
   }
 
-  const { title, desc, img, slug, catSlug } = await request.json();
+  const { title, desc, img, slug, catSlug, keywords, postDesc } = await request.json();
 
   try {
     const post = await prisma.post.update({
       where: { id },
       data: {
         title,
+        keywords,
+        postDesc,
         desc,
         img,
         slug,

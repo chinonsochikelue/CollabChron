@@ -85,7 +85,7 @@ const Navbar = () => {
             <AuthLinks />
           </div>
         </div>
-        <div className="xl:hidden md:hidden sm:hidden 2xl:hidden" onClick={() => setMenu(!menu)}>
+        <div className="xl:hidden md:hidden 2xl:hidden" onClick={() => setMenu(!menu)}>
           {menu ? (
             <svg
               xmlns="http://www.w3.org/2000/svg"
