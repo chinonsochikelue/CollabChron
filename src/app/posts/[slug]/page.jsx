@@ -248,7 +248,7 @@ const SinglePage = async ({ params }) => {
             <Image
               src={postData.img}
               alt={postData.title}
-              className="w-full md:w-1/2 h-auto md:h-[360px] 2xl:h-[460px] rounded object-contain"
+              className="w-full md:w-1/2 h-auto md:h-[360px] 2xl:h-[460px] rounded-md object-contain"
               width={500}
               height={500}
               priority={false}
