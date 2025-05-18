@@ -1,20 +1,19 @@
 import prisma from "@/lib/prismadb";
 import { NextResponse } from "next/server";
 
-export const GET = async (req) => {
+export const GET = async (req: Request) => {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://collabchron.com.ng';
-  
+  const siteUrl = baseUrl.replace(/\/$/, "");
+
   try {
     const posts = await prisma.post.findMany({
       select: {
         slug: true,
         updatedAt: true,
-        id: true, // Added to include post id
+        id: true,
       },
       orderBy: { updatedAt: 'desc' },
     });
-
-    const siteUrl = baseUrl;
 
     const staticPaths = [
       { path: '/', priority: 1.0 },
@@ -23,8 +22,8 @@ export const GET = async (req) => {
     ];
 
     const dynamicPaths = posts.map(post => ({
-      path: `/posts/${post.slug}`, // Now includes post.id
-      lastmod: new Date(post.updatedAt).toISOString(),
+      path: `/posts/${post.slug}`,
+      lastmod: post.updatedAt.toISOString(),
       priority: 0.7,
     }));
 
@@ -32,12 +31,12 @@ export const GET = async (req) => {
 
     const sitemapXml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  ${allPaths.map(({ path, lastmod, priority }) => `
-    <url>
-      <loc>${siteUrl}${path}</loc>
-      ${lastmod ? `<lastmod>${lastmod}</lastmod>` : ''}
-      <priority>${priority}</priority>
-    </url>`).join('')}
+${allPaths.map(({ path, lastmod, priority }) => `
+  <url>
+    <loc>${siteUrl}${path}</loc>
+    ${lastmod ? `<lastmod>${lastmod}</lastmod>` : ''}
+    <priority>${priority}</priority>
+  </url>`).join('')}
 </urlset>`;
 
     return new NextResponse(sitemapXml.trim(), {
@@ -54,4 +53,3 @@ export const GET = async (req) => {
     );
   }
 };
-        
