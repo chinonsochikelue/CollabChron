@@ -48,20 +48,59 @@ const getData = async () => {
 
 
 // Generate JSON-LD for the home page
+// export async function generateJsonLd() {
+//   return {
+//     "@context": "https://schema.org",
+//     "@type": "WebSite",
+//     "url": process.env.NEXT_PUBLIC_SITE_URL,
+//     "name": "CollabChron",
+//     "description": "Welcome to the home page of our blog, where you can explore a variety of categories and posts.",
+//     "potentialAction": {
+//       "@type": "SearchAction",
+//       "target": `${process.env.NEXT_PUBLIC_SITE_URL}/search?q={search_term_string}`,
+//       "query-input": "required name=search_term_string",
+//     },
+//   };
+// }
+
+// Generate JSON-LD for the home page
 export async function generateJsonLd() {
-  return {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    "url": process.env.NEXT_PUBLIC_SITE_URL,
-    "name": "CollabChron",
-    "description": "Welcome to the home page of our blog, where you can explore a variety of categories and posts.",
-    "potentialAction": {
-      "@type": "SearchAction",
-      "target": `${process.env.NEXT_PUBLIC_SITE_URL}/search?q={search_term_string}`,
-      "query-input": "required name=search_term_string",
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL;
+
+  return [
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "url": baseUrl,
+      "name": "CollabChron",
+      "description": "Welcome to the home page of our blog, where you can explore a variety of categories and posts.",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": `${baseUrl}/search?q={search_term_string}`,
+        "query-input": "required name=search_term_string",
+      },
     },
-  };
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": baseUrl,
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Blog",
+          "item": `${baseUrl}/blog`,
+        }
+      ]
+    }
+  ];
 }
+
 
 // Main component for the home page
 export default async function Home({ searchParams }) {

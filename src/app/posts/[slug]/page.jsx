@@ -1,4 +1,3 @@
-import dynamic from "next/dynamic";
 import styles from "./singlePage.module.css";
 import Image from "next/image";
 import { MailPlusIcon, EditIcon } from "lucide-react";
@@ -6,37 +5,18 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/utils/auth";
 import prisma from "@/lib/prismadb";
 import NotFound from "@/app/_404";
-import parse from "html-react-parser";
 import { Toaster } from "react-hot-toast";
 import Link from "next/link";
 import DeletePost from "@/components/deletePost/deletePost";
-import SkeletonLoader from "@/components/SkeletonLoader";  // Import SkeletonLoader
+import { getPostMetadata, generateJSONLD } from "@/utils/seo";
+import sanitizeHtml from "sanitize-html";
+import Menu from "@/components/Menu/Menu"
+import Comments from "@/components/comments/Comments"
+import FollowButton from "@/components/follow/followButton"
+import Tts from "@/components/tts/tts"
+import Clap from "@/components/clap/clap"
+import Share from "@/components/share"
 
-// Dynamically import heavy components with skeleton loaders
-const Menu = dynamic(() => import("@/components/Menu/Menu"), {
-  loading: () => <SkeletonLoader />,
-  ssr: false,
-});
-const Comments = dynamic(() => import("@/components/comments/Comments"), {
-  loading: () => <SkeletonLoader />,
-  ssr: false,
-});
-const FollowButton = dynamic(() => import("@/components/follow/followButton"), {
-  loading: () => <SkeletonLoader />,
-  ssr: false,
-});
-const Tts = dynamic(() => import("@/components/tts/tts"), {
-  loading: () => <SkeletonLoader />,
-  ssr: false,
-});
-const Clap = dynamic(() => import("@/components/clap/clap"), {
-  loading: () => <SkeletonLoader />,
-  ssr: false,
-});
-const Share = dynamic(() => import("@/components/share"), {
-  loading: () => <SkeletonLoader />,
-  ssr: false,
-});
 
 // Function to get post data from the database
 const getPostData = async (slug) => {
@@ -52,12 +32,10 @@ const getPostData = async (slug) => {
   }
 };
 
-  
+
 export async function generateMetadata({ params }) {
   const { slug } = params;
   const postData = await getPostData(slug);
-
-
   if (!postData) {
     return {
       title: "Post Not Found",
@@ -65,47 +43,7 @@ export async function generateMetadata({ params }) {
       robots: "noindex, nofollow",
     };
   }
-
-  const publishedAt = new Date(postData.createdAt).toISOString();
-  const modifiedAt = new Date(
-    postData.updatedAt || postData.createdAt
-  ).toISOString();
-
-  const ogImages = postData.img ? [{ url: postData.img }] : [];
-  const authors = postData.user?.name ? [postData.user.name] : [];
-
-  const keywordsArray = [postData?.keywords, postData?.title, postData?.catSlug, postData?.user.name, "CollabChron"];
-  const keywords = keywordsArray.join(", ");
-
-  return {
-    title: postData.title,
-    description: postData.postDesc,
-    keywords: keywords,
-      robots: "index, follow",
-    openGraph: {
-      title: postData.title,
-      description: postData.postDesc,
-      url: `${process.env.NEXT_PUBLIC_SITE_URL}/posts/${postData.slug}`,
-      type: "article",
-      publishedTime: publishedAt,
-      modifiedTime: modifiedAt,
-      images: ogImages,
-      authors,
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: postData.title,
-      description: postData.postDesc,
-      images: ogImages,
-      robots: "index, follow",
-    },
-    alternates: {
-      types: {
-        "application/rss+xml": `${process.env.NEXT_PUBLIC_SITE_URL}/routes/rss`,
-      },
-    },
-    author: postData.user?.name || "Chinonso Chikelue (fluantiX)",
-  };
+  return getPostMetadata(postData);
 }
 
 const SinglePage = async ({ params }) => {
@@ -118,9 +56,14 @@ const SinglePage = async ({ params }) => {
 
   const session = await getServerSession(authOptions);
   const isAuthor = session?.user?.email === postData.user?.email;
-
   const postUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/posts/${postData.slug}`;
-
+  const sanitizedHtml = sanitizeHtml(postData.desc, {
+    allowedTags: sanitizeHtml.defaults.allowedTags.concat(["img", "h1", "h2"]),
+    allowedAttributes: {
+      ...sanitizeHtml.defaults.allowedAttributes,
+      img: ["src", "alt", "title", "width", "height"],
+    },
+  });
 
   return (
     <>
@@ -135,6 +78,11 @@ const SinglePage = async ({ params }) => {
             color: "#fff",
           },
         }}
+      />
+      {/* JSON-LD structured data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(generateJSONLD(postData)) }}
       />
       <div className="w-full px-0 md:px-10 py-8 2xl:px-20">
         <div className="w-full flex flex-col-reverse md:flex-row gap-2 gap-y-5 items-center">
@@ -165,8 +113,7 @@ const SinglePage = async ({ params }) => {
                       className="object-cover w-12 h-12 rounded-full"
                       width={45}
                       height={45}
-                      loading="lazy"
-                      priority={false}
+                      priority
                     />
                   </Link>
                   <div>
@@ -199,7 +146,7 @@ const SinglePage = async ({ params }) => {
                             </span>
                           </Link>
 
-                            <DeletePost post={postData} />
+                          <DeletePost post={postData} />
 
                         </>
                       ) : (
@@ -261,14 +208,14 @@ const SinglePage = async ({ params }) => {
 
         <div className="w-full flex flex-col md:flex-row gap-x-10 2xl:gap-x-28 mt-10 text-slate-800 dark:text-white">
           <div className="w-full md:w-2/3 flex flex-col text-slate-800 dark:text-white">
-          <div
-            className="prose prose-lg max-w-none text-slate-800 dark:text-white dark:prose-dark"
-            dangerouslySetInnerHTML={{ __html: postData.desc }}
-          />
+            <div
+              className="prose prose-lg max-w-none text-slate-800 dark:text-white dark:prose-dark"
+              dangerouslySetInnerHTML={{ __html: postData.desc }}
+            />
             <div className="w-full px-0 md:px-10 py-8 2xl:px-20">
               <Share
                 title={postData.title}
-                desc={postData.desc}
+                desc={postData.postDesc}
                 link={postUrl}
               />
             </div>
