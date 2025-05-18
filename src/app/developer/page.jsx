@@ -29,28 +29,6 @@ export default function DeveloperPage() {
         }
     }, [status, router])
 
-    const testApiKey = async () => {
-        try {
-            setLoading(true)
-            const response = await fetch('http://localhost:3000/api/v1/users/stats', {
-                headers: {
-                    'Authorization': 'cc_b1be776ca5b9875d9da05b09c853845353a91d4dfd0567c2'
-                }
-            });
-            if (response.ok) {
-                const data = await response.json()
-                console.log("======", data);
-            } else {
-                toast.error("Failed to fetch API keys")
-            }
-        } catch (error) {
-            console.error("Error fetching API keys:", error)
-            toast.error("An error occurred while fetching API keys")
-        } finally {
-            setLoading(false)
-        }
-    }
-
     const fetchApiKeys = async () => {
         try {
             setLoading(true)
