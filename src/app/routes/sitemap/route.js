@@ -1,7 +1,7 @@
 import prisma from "@/lib/prismadb";
 import { NextResponse } from "next/server";
 
-export const GET = async (req) => {
+export const GET = async (req: Request) => {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://collabchron.com.ng';
   const siteUrl = baseUrl.replace(/\/$/, "");
 
