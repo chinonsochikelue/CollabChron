@@ -401,13 +401,13 @@ func main() {
                                     posts, user data, and statistics from the CollabChron platform.
                                 </p>
 
-                                <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg mb-6 flex items-start gap-3">
+                                <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg mb-6 flex flex-wrap items-start gap-3">
                                     <Info className="text-blue-500 mt-1 flex-shrink-0" size={20} />
                                     <div>
                                         <h3 className="font-semibold text-blue-700 dark:text-blue-300 mb-1">Base URL</h3>
-                                        <p className="text-gray-700 dark:text-gray-300">
+                                        <p className="text-gray-700 dark:text-gray-300 flex flex-wrap">
                                             All API requests should be made to:{" "}
-                                            <code className="bg-blue-100 dark:bg-blue-800 px-2 py-1 rounded text-blue-800 dark:text-blue-200 font-mono">
+                                            <code className="bg-blue-100 flex flex-wrap dark:bg-blue-800 px-2 py-1 rounded text-blue-800 dark:text-blue-200 font-mono">
                                                 {process.env.NEXT_PUBLIC_SITE_URL}/api/v1
                                             </code>
                                         </p>
@@ -415,7 +415,7 @@ func main() {
                                 </div>
 
                                 <h2 className="text-2xl font-bold mt-8 mb-4 dark:text-gray-200">Getting Started</h2>
-                                <p className="dark:text-gray-200">To use the CollabChron API, you'll need to:</p>
+                                <p className="dark:text-gray-200">{"To use the CollabChron API, you'll need to:"}</p>
                                 <ol className="list-decimal pl-6 mb-6 space-y-2">
                                     <li className="dark:text-gray-200">
                                         <Link href="/developer" className="text-blue-600 dark:text-blue-400 hover:underline">

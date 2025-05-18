@@ -1,5 +1,5 @@
 "use client";
-import { Button, Select, Textarea, TextInput } from "@mantine/core";
+import { Button, Textarea, TextInput } from "@mantine/core";
 import styles from "./writePage.module.css";
 import { Link, RichTextEditor } from "@mantine/tiptap";
 import { IconColorPicker } from "@tabler/icons-react";
@@ -32,6 +32,7 @@ import { app } from "@/utils/firebase";
 import { useState, useEffect, useRef } from "react";
 import toast from "react-hot-toast";
 import Image from "next/image";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const lowlight = createLowlight();
 lowlight.register({ ts });
@@ -151,7 +152,7 @@ const WritePage = () => {
           desc: editor.getHTML(),
           img: media,
           slug: slugify(title),
-          catSlug: catSlug || "NEWS", 
+          catSlug: catSlug || "NEWS",
         }),
       });
 
@@ -268,15 +269,26 @@ const WritePage = () => {
               defaultValue={postDesc}
               onChange={(e) => setPostDesc(e.target.value)}
             />
+            <div className="md:mt-6">
+              <Select onValueChange={(val) => setCatSlug(val)}>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Select Post Category" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Categories</SelectLabel>
+                    <SelectItem value="NEWS">NEWS</SelectItem>
+                    <SelectItem value="TECHNOLOGY">TECHNOLOGY</SelectItem>
+                    <SelectItem value="LIFESTYLE">LIFESTYLE</SelectItem>
+                    <SelectItem value="EDUCATION">EDUCATION</SelectItem>
+                    <SelectItem value="AI">AI</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
 
-            <Select
-              label="Category"
-              defaultValue={"NEWS"}
-              className="w-full flex-1 text-black"
-              placeholder="Pick Category"
-              data={["NEWS", "TECHNOLOGY", "LIFESTYLE", "EDUCATION"]}
-              onChange={(val) => setCatSlug(val)}
-            />
+            </div>
+
+
           </div>
 
           {/* Image Preview */}
