@@ -250,7 +250,7 @@ echo json_encode(['status' => 'success']);`,
   }
 
   return (
-    <div className="container mx-auto py-8 px-4 max-w-screen-xl">
+    <div className="-ml-10 md:ml-0 container mx-auto py-8 px-4 max-w-screen">
       <div className="flex flex-col space-y-8">
         <div>
           <h1 className="text-3xl font-bold">API Webhooks</h1>

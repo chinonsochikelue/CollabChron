@@ -81,6 +81,7 @@ export async function generateMetadata({ params }) {
     title: postData.title,
     description: postData.postDesc,
     keywords: keywords,
+      robots: "index, follow",
     openGraph: {
       title: postData.title,
       description: postData.postDesc,
@@ -96,8 +97,8 @@ export async function generateMetadata({ params }) {
       title: postData.title,
       description: postData.postDesc,
       images: ogImages,
+      robots: "index, follow",
     },
-    canonical: `${process.env.NEXT_PUBLIC_SITE_URL}/posts/${postData.slug}`,
     alternates: {
       types: {
         "application/rss+xml": `${process.env.NEXT_PUBLIC_SITE_URL}/routes/rss`,

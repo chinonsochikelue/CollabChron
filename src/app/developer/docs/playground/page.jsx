@@ -311,7 +311,7 @@ export default function ApiPlayground() {
   }
 
   return (
-    <div className="container mx-auto py-8 px-4 max-w-screen-xl">
+    <div className="container mx-auto py-8 px-4 max-w-screen">
       <div className="flex flex-col space-y-6">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>

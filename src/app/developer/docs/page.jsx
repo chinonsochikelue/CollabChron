@@ -246,7 +246,7 @@ func main() {
     }
 
     return (
-        <div className="container mx-auto py-8 px-4 max-w-screen-xl">
+        <div className="container mx-auto max-w-screen overflow-x-hidden py-8 px-4">
             <div className="flex flex-col md:flex-row gap-8">
                 {/* Sidebar Navigation */}
                 <aside className="md:w-64 flex-shrink-0">

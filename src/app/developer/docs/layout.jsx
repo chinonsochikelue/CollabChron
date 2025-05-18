@@ -46,7 +46,7 @@ export default function ApiDocsLayout({ children }) {
   }
 
   return (
-    <SidebarProvider>
+    <SidebarProvider className="w-full max-w-screen overflow-x-hidden">
       <div className="flex min-h-screen">
         <Sidebar>
           <SidebarHeader>
