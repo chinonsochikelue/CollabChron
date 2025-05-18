@@ -61,6 +61,7 @@ model User {
   Save          Save[]
   Clap          Clap[]
   Following     Following[]
+  apiKeys       ApiKey[]
 }
 
 model VerificationToken {
@@ -142,4 +143,17 @@ model Following {
   user        User   @relation(fields: [userEmail], references: [email])
 
   @@unique([followerId, followingId])
+}
+
+model ApiKey {
+  id          String    @id @default(cuid()) @map("_id")
+  key         String    @unique
+  name        String
+  createdAt   DateTime  @default(now())
+  lastUsedAt  DateTime?
+  expiresAt   DateTime?
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  permissions String[]  @default(["read:posts", "read:profile"])
+  isRevoked   Boolean   @default(false)
 }

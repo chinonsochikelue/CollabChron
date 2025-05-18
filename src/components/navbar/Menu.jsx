@@ -1,12 +1,12 @@
-import React from "react";
-import { AnimatePresence, motion } from "framer-motion";
-import Button from "@/providers/ThemeToggle";
-import AuthLinks from "../authLinks/AuthLinks";
-import Link from "next/link";
-import { signOut, useSession } from "next-auth/react";
+"use client"
+import { AnimatePresence, motion } from "framer-motion"
+import Button from "@/providers/ThemeToggle"
+import AuthLinks from "../authLinks/AuthLinks"
+import Link from "next/link"
+import { signOut, useSession } from "next-auth/react"
 
 export default function Menu({ menu, setMenu }) {
-  const { status, data: session } = useSession();
+  const { status, data: session } = useSession()
   const menus = [
     {
       title: "Home",
@@ -20,11 +20,17 @@ export default function Menu({ menu, setMenu }) {
       title: "About",
       link: "/about",
     },
-  ];
+  ]
 
-  console.log("STATIS", status
-    ? "authenticated"
-    : "unauthenticated");
+  // Add Developer link if user is authenticated
+  if (status === "authenticated") {
+    menus.push({
+      title: "Developer",
+      link: "/developer",
+    })
+  }
+
+  console.log("STATIS", status ? "authenticated" : "unauthenticated")
   return (
     <AnimatePresence>
       {menu && (
@@ -38,8 +44,7 @@ export default function Menu({ menu, setMenu }) {
             {menus.map((item, i) => (
               <Link
                 href={item.link}
-                className={`${item?.active ? "text-blue-600" : "text-gray-600"
-                  } py-4 transition hover:text-blue-500 `}
+                className={`${item?.active ? "text-blue-600" : "text-gray-600"} py-4 transition hover:text-blue-500 `}
                 key={i}
                 onClick={() => setMenu(false)} // Close the menu on click
               >
@@ -49,10 +54,11 @@ export default function Menu({ menu, setMenu }) {
             <AuthLinks setMenu={setMenu} />
             <div className="flex justify-between items-center">
               {status === "authenticated" ? (
-                <button setMenu={setMenu}
+                <button
+                  setMenu={setMenu}
                   onClick={() => {
-                    signOut();
-                    setMenu(false);
+                    signOut()
+                    setMenu(false)
                   }}
                 >
                   Logout
@@ -65,5 +71,5 @@ export default function Menu({ menu, setMenu }) {
         </motion.div>
       )}
     </AnimatePresence>
-  );
+  )
 }

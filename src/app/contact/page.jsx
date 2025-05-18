@@ -19,7 +19,7 @@ const info = [
   {
     icon: <FaPhoneAlt />,
     title: "Phone",
-    desc: "(+234) 907 480 2816",
+    desc: "(+234) (0)912 459 377 9",
   },
   {
     icon: <FaEnvelope />,
@@ -29,7 +29,7 @@ const info = [
   {
     icon: <FaMapMarkerAlt />,
     title: "Address",
-    desc: "No.3 Ikebuaso Street Awada Obosi, Anambra State, Nigeria",
+    desc: "Awada Obosi, Anambra State, Nigeria",
   },
 ];
 
