@@ -19,6 +19,8 @@ export const GET = async (req) => {
       { path: '/', priority: 1.0 },
       { path: '/about', priority: 0.8 },
       { path: '/contact', priority: 0.8 },
+      { path: '/developer', priority: 0.8 },
+      { path: '/developer/docs', priority: 0.8 },
     ];
 
     const dynamicPaths = posts.map(post => ({
