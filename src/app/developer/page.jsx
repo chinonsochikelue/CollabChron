@@ -25,7 +25,6 @@ export default function DeveloperPage() {
             router.push("/login")
         } else if (status === "authenticated") {
             fetchApiKeys()
-            testApiKey()
         }
     }, [status, router])
 
