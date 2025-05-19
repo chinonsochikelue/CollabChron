@@ -63,7 +63,9 @@ export default function Menu({ menu, setMenu }) {
                   Logout
                 </button>
               ) : null}
-              <ModeToggle />
+              <div className="mt-4 md:mt-0">
+                <ModeToggle />
+                </div>
             </div>
           </ul>
         </motion.div>
