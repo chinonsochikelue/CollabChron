@@ -1,6 +1,6 @@
 "use client"
 import { AnimatePresence, motion } from "framer-motion"
-import Button from "@/providers/ThemeToggle"
+import Button, { ModeToggle } from "@/providers/ThemeToggle"
 import AuthLinks from "../authLinks/AuthLinks"
 import Link from "next/link"
 import { signOut, useSession } from "next-auth/react"
@@ -64,8 +64,7 @@ export default function Menu({ menu, setMenu }) {
                   Logout
                 </button>
               ) : null}
-
-              <Button setMenu={setMenu} />
+              <ModeToggle />
             </div>
           </ul>
         </motion.div>

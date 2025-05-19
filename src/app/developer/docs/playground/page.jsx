@@ -538,7 +538,7 @@ export default function ApiPlayground() {
                   <button
                     onClick={handleSendRequest}
                     disabled={isLoading || apiKeys.length === 0}
-                    className="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md disabled:bg-blue-400"
+                    className="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md disabled:bg-gray-400"
                   >
                     {isLoading ? (
                       <>

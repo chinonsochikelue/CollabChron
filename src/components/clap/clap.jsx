@@ -3,9 +3,8 @@
 import { useSession } from "next-auth/react";
 import useSWR, { mutate } from "swr";
 import { useState } from "react";
-// import styles from "./clap.module.css"; // Ensure you create this CSS file
 import { HeartHandshakeIcon, Loader } from "lucide-react";
-import { useAnimation } from "framer-motion";
+import { useAnimation, motion } from "framer-motion";
 import toast from "react-hot-toast";
 
 const fetcher = async (url) => {
@@ -75,7 +74,7 @@ const Clap = ({ postId }) => {
           className="flex items-baseline text-2xl font-medium text-slate-700 dark:text-gray-400"
           style={{ cursor: hasClapped ? "not-allowed" : "pointer" }}
         >
-          <motion 
+          <motion.div
             onClick={handleClap} 
             disabled={hasClapped || isClapped}
             animate={controls}
@@ -85,7 +84,7 @@ const Clap = ({ postId }) => {
             ) : (
               <HeartHandshakeIcon height={30} width={30} color="gray" />
             )}
-          </motion>
+          </motion.div>
           <p className="text-slate-800 dark:text-slate-300 text-base">{data?.length}</p>
         </div>
       )}

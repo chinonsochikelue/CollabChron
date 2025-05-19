@@ -35,7 +35,35 @@ export async function generateMetadata() {
   };
 }
 
-function page() {
+
+const fetchPosts = async () => {
+  try {
+    const response = await fetch("http://localhost:3000/api/v1/users/posts", {
+      method: "GET",
+      headers: {
+        "Authorization": "Bearer cc_5832b024f267016c1d74d95ea4cdf66ae35c763e4b1f1b28"
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log("Post data:", data);
+    return data;
+  } catch (error) {
+    console.error("Error fetching posts:", error);
+    return null;
+  }
+};
+
+
+
+async function page() {
+  // Optional: Call the fetchPosts function if you want to log that data too
+  const externalPosts = await fetchPosts();
+  console.log("Fetched external posts:", externalPosts);
   return (
     <div className="max-w-screen-xl mx-auto overflow-hidden">
       <Hero />

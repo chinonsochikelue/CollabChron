@@ -17,7 +17,7 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata = {
   metadataBase: new URL('https://www.collabchron.com.ng'),
   title: {
-    default: "Collaboration Chronology",
+    default: "CollabChron",
     template: "%s - CollabChron",
   },
   description:
@@ -79,36 +79,37 @@ export const metadata = {
       "CollabChron is a dynamic multi-author blog platform where writers and readers connect. Discover diverse perspectives, share your voice, and explore captivating stories on topics ranging from technology and lifestyle to culture and beyond.",
     images: ["/favicon.ico"],
   },
-  category: 'technology, news, sports, fashion, entertainment, coding, culture, styles, machine learning',
+  category: 'technology, ai, news, sports, fashion, entertainment, coding, culture, styles, machine learning',
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className="scroll-smooth" suppressHydrationWarning>
+      <meta name="msvalidate.01" content="4BB8182AAAC464C950E2F99FE3546368" />
       <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID} />
-  <GoogleAdsense pId={process.env.NEXT_PUBLIC_GOOGLE_ADSENSE_ID} />
+      <GoogleAdsense pId={process.env.NEXT_PUBLIC_GOOGLE_ADSENSE_ID} />
       <body
         className={`${inter.className} w-full min-h-screen dark:text-white text-slate-800 dark:bg-[#020b19] bg-white`}
       >
         <AuthProvider>
-            <ThemeProvider
-              attribute="class"
-              defaultTheme="system"
-              enableSystem
-              disableTransitionOnChange
-            >
-        <MantineProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <MantineProvider>
               <div className="w-full max-w-screen overflow-x-hidden">
                 <Toaster />
                 <Navbar />
                 <main>{children}</main>
                 <Footer />
               </div>
-              </MantineProvider>
-            </ThemeProvider>
+            </MantineProvider>
+          </ThemeProvider>
         </AuthProvider>
       </body>
     </html>
   );
-  }
-    
+}
+

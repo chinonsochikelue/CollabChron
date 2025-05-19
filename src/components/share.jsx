@@ -7,8 +7,8 @@ import { FaFacebookF, FaReddit, FaTelegram } from "react-icons/fa";
 
 function Share({ title, desc, link }) {
   const [isMobile, setIsMobile] = useState(false);
-  const hashtags = ["#tag1", "#tag2"]; // Customize your hashtags if needed
-  const maxDescLength = 100; // Maximum length of description
+  const hashtags = ["#collabcron", `#link`]; // Customize your hashtags if needed
+  const maxDescLength = 200; // Maximum length of description
 
   // Truncate the description to the defined length
   const truncatedDesc = desc.length > maxDescLength 

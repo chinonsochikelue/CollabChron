@@ -5,6 +5,7 @@ import Menu from "@/components/Menu/Menu";
 import { BsCodeSlash, BsNewspaper, BsPerson } from "react-icons/bs";
 import { MdCastForEducation } from "react-icons/md";
 import Link from "next/link";
+import { Bot } from "lucide-react";
 
 // Define categories
 const CATEGORIES = [
@@ -16,6 +17,11 @@ const CATEGORIES = [
   },
   {
     label: "TECHNOLOGY",
+    color: "bg-[#1e90ff]", // Blue
+    icon: <Bot />,
+  },
+  {
+    label: "AI",
     color: "bg-[#1e90ff]", // Blue
     icon: <BsCodeSlash />,
   },
@@ -30,6 +36,7 @@ const CATEGORIES = [
     icon: <BsPerson />,
   },
 ];
+
 
 // Function to fetch posts data
 const getData = async () => {
@@ -46,22 +53,6 @@ const getData = async () => {
   return res.json();
 };
 
-
-// Generate JSON-LD for the home page
-// export async function generateJsonLd() {
-//   return {
-//     "@context": "https://schema.org",
-//     "@type": "WebSite",
-//     "url": process.env.NEXT_PUBLIC_SITE_URL,
-//     "name": "CollabChron",
-//     "description": "Welcome to the home page of our blog, where you can explore a variety of categories and posts.",
-//     "potentialAction": {
-//       "@type": "SearchAction",
-//       "target": `${process.env.NEXT_PUBLIC_SITE_URL}/search?q={search_term_string}`,
-//       "query-input": "required name=search_term_string",
-//     },
-//   };
-// }
 
 // Generate JSON-LD for the home page
 export async function generateJsonLd() {
@@ -105,7 +96,7 @@ export async function generateJsonLd() {
 // Main component for the home page
 export default async function Home({ searchParams }) {
   const posts = await getData();
-  const page = parseInt(searchParams.page) || 1;
+  const page = parseInt(searchParams?.page) || 1;
   const randomIndex = Array.isArray(posts)
     ? Math.floor(Math.random() * posts.length)
     : 0;
@@ -154,3 +145,5 @@ export default async function Home({ searchParams }) {
     </>
   );
 }
+
+

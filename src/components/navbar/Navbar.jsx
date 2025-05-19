@@ -9,7 +9,7 @@ import FacebookIcon from "../../assets/svgs/facebook.svg"
 import LinkedinIcon from "../../assets/svgs/linkedin.svg"
 import TwitterIcon from "../../assets/svgs/twitter.svg"
 import Logo from "./Logo"
-import Button from "@/providers/ThemeToggle"
+import { ModeToggle } from "@/providers/ThemeToggle"
 import Menu from "./Menu"
 import { useSession } from "next-auth/react"
 
@@ -74,7 +74,7 @@ const Navbar = () => {
           </div>
 
           <div className="hidden md:flex gap-8 items-center order-3 xl:order-3">
-            <Button />
+            <ModeToggle />
             <Link href="/" className={styles.link}>
               Home
             </Link>

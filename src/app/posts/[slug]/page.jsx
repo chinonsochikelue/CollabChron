@@ -199,8 +199,7 @@ const SinglePage = async ({ params }) => {
               className="w-full md:w-1/2 h-auto md:h-[360px] 2xl:h-[460px] rounded-md object-contain"
               width={500}
               height={500}
-              priority={false}
-              loading="lazy"
+              priority
               sizes="(max-width: 768px) 100vw, (min-width: 769px) 50vw"
             />
           )}
@@ -215,7 +214,7 @@ const SinglePage = async ({ params }) => {
             <div className="w-full px-0 md:px-10 py-8 2xl:px-20">
               <Share
                 title={postData.title}
-                desc={postData.postDesc}
+                desc={postData.postDesc || postData.desc}
                 link={postUrl}
               />
             </div>
