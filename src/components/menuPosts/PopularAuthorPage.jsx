@@ -39,7 +39,7 @@ const PopularAuthorPage = async () => {
         <div key={author.id} className={styles.item}>
           {author.image && (
             <div className={styles.imageContainer}>
-              <Image src={author.image} alt={author.name} fill className={styles.image} />
+              <Image src={author.image} alt={author.name} height={60} width={60} priority className={styles.image} />
             </div>
           )}
           <div className={styles.textContainer}>

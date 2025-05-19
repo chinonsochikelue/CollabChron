@@ -16,6 +16,7 @@ import FollowButton from "@/components/follow/followButton"
 import Tts from "@/components/tts/tts"
 import Clap from "@/components/clap/clap"
 import Share from "@/components/share"
+import { Button } from "@/components/ui/button";
 
 
 // Function to get post data from the database
@@ -128,10 +129,11 @@ const SinglePage = async ({ params }) => {
                           {/* Button for larger screens */}
                           <Link
                             href={`/edit-post/${postData.slug}/${postData.id}`}
-                            className="hidden md:inline-block py-1 px-6 border bg-[#38ff38] rounded-3xl"
                             aria-label="Edit Post"
                           >
-                            Edit Post
+                            <Button variant="outline" className="bg-[#38ff38] hidden md:inline-block">
+                              Edit Post
+                              </Button>
                           </Link>
                           {/* Icon for smaller screens with tooltip */}
                           <Link
@@ -170,16 +172,9 @@ const SinglePage = async ({ params }) => {
                       )}
                     </div>
                     <div className="flex flex-col md:flex-row md:justify-between gap-4">
-                      <span className="text-slate-800 dark:text-slate-300">
-                        Created on:{" "}
-                        {new Date(postData.createdAt).toLocaleDateString(
-                          undefined,
-                          { year: "numeric", month: "long", day: "numeric" }
-                        )}
-                      </span>
                       {postData.updatedAt && (
                         <span className="text-slate-800 dark:text-slate-300">
-                          Last updated:{" "}
+                          Posted on{" "}
                           {new Date(postData.updatedAt).toLocaleDateString(
                             undefined,
                             { year: "numeric", month: "long", day: "numeric" }

@@ -2,10 +2,11 @@ import styles from "./homepage.module.css";
 import Banner from "@/components/Banner/Banner";
 import CardList from "@/components/cardList/CardList";
 import Menu from "@/components/Menu/Menu";
-import { BsCodeSlash, BsNewspaper, BsPerson } from "react-icons/bs";
+import { BsNewspaper, BsPerson } from "react-icons/bs";
 import { MdCastForEducation } from "react-icons/md";
 import Link from "next/link";
-import { Bot } from "lucide-react";
+import { Bot, Cpu } from "lucide-react";
+import NotFound from "./_404";
 
 // Define categories
 const CATEGORIES = [
@@ -18,12 +19,12 @@ const CATEGORIES = [
   {
     label: "TECHNOLOGY",
     color: "bg-[#1e90ff]", // Blue
-    icon: <Bot />,
+    icon: <Cpu />,
   },
   {
     label: "AI",
-    color: "bg-[#1e90ff]", // Blue
-    icon: <BsCodeSlash />,
+    color: "bg-[#1e9]", //
+    icon: <Bot />,
   },
   {
     label: "EDUCATION",
@@ -64,7 +65,7 @@ export async function generateJsonLd() {
       "@type": "WebSite",
       "url": baseUrl,
       "name": "CollabChron",
-      "description": "Welcome to the home page of our blog, where you can explore a variety of categories and posts.",
+      "description": "CollabChron is a dynamic multi-author blog platform where writers and readers connect. Discover diverse perspectives, share your voice, and explore captivating stories on topics ranging from technology and lifestyle to culture and beyond.",
       "potentialAction": {
         "@type": "SearchAction",
         "target": `${baseUrl}/search?q={search_term_string}`,
@@ -84,8 +85,38 @@ export async function generateJsonLd() {
         {
           "@type": "ListItem",
           "position": 2,
+          "name": "Write",
+          "item": `${baseUrl}/write`,
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
           "name": "Blog",
           "item": `${baseUrl}/blog`,
+        },
+        {
+          "@type": "ListItem",
+          "position": 4,
+          "name": "Api",
+          "item": `${baseUrl}/developer`,
+        },
+        {
+          "@type": "ListItem",
+          "position": 5,
+          "name": "About",
+          "item": `${baseUrl}/about`,
+        },
+        {
+          "@type": "ListItem",
+          "position": 6,
+          "name": "Contact",
+          "item": `${baseUrl}/contact`,
+        },
+        {
+          "@type": "ListItem",
+          "position": 7,
+          "name": "Docs",
+          "item": `${baseUrl}/developer/docs`,
         }
       ]
     }
@@ -96,13 +127,13 @@ export async function generateJsonLd() {
 // Main component for the home page
 export default async function Home({ searchParams }) {
   const posts = await getData();
-  const page = parseInt(searchParams?.page) || 1;
+  const page = parseInt(searchParams?.page || "1", 10);
   const randomIndex = Array.isArray(posts)
     ? Math.floor(Math.random() * posts.length)
     : 0;
 
   if (!posts.length && page > 1) {
-    notFound();
+    NotFound();
   }
 
   const jsonLd = await generateJsonLd();
@@ -116,7 +147,7 @@ export default async function Home({ searchParams }) {
       <div className="py-20 2xl:py-5">
         <Banner post={posts[randomIndex]} />
 
-        <div className="px-0 lg:pl-10 2xl:px-10">
+        <div className="px-0 md:px-10">
           <div className="mt-6 md:mt-0">
             <p className="text-2xl font-semibold text-gray-600 dark:text-white">
               Popular Categories
@@ -134,7 +165,7 @@ export default async function Home({ searchParams }) {
               ))}
             </div>
             <div className="w-full flex flex-col gap-10 2xl:gap-20">
-              <div className={styles.content}>
+              <div className="md:gap-5 gap-10 grid md:grid-cols-9">
                 <CardList page={page} />
                 <Menu />
               </div>

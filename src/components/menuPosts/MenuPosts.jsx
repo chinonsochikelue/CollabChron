@@ -55,7 +55,7 @@ const MenuPosts = ({ withImage }) => {
                   <Image
                     src={post.img}
                     alt={`Image illustrating ${post.title}`}
-                    fill
+                    height={60} width={60} priority
                     className={styles.image}
                   />
                 </figure>

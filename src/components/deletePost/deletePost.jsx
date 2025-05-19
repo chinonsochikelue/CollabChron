@@ -6,6 +6,7 @@ import { useState } from "react";
 import { toast } from "react-hot-toast";
 import { Loader, TrashIcon } from "lucide-react";  // Import TrashIcon
 import Modal from "./Modal";
+import { Button } from "../ui/button";
 
 const DeletePost = ({ post, onPostDeleted }) => {
   const [loading, setLoading] = useState(false);
@@ -40,14 +41,15 @@ const DeletePost = ({ post, onPostDeleted }) => {
     <>
 {/* Icon for smaller screens with tooltip */}
       <div className="relative group inline-block md:hidden">
-        <button
+        <Button
           onClick={() => setShowModal(true)}
           disabled={loading}
-          className={`rounded-full py-2 px-2 text-white ${loading ? "bg-gray-400" : "bg-red-500"}`}
+        variant="destructive"
+          className={`rounded-full ${loading ? "bg-gray-400" : ""}`}
           aria-label="Delete Post"
         >
           {loading ? <Loader className="animate-spin text-white" size={25} /> : <TrashIcon size={24} /> }
-        </button>
+        </Button>
         {/* Tooltip */}
         <span className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-max opacity-0 group-hover:opacity-100 transition-opacity bg-gray-800 text-white text-xs rounded py-1 px-2">
           Delete Post
@@ -56,18 +58,15 @@ const DeletePost = ({ post, onPostDeleted }) => {
 
 
       {/* Button for larger screens */}
-      <button
+      <Button
         onClick={() => setShowModal(true)}
         disabled={loading}
-        className={`hidden md:inline-block rounded-full py-2 px-4 text-white ${loading ? "bg-gray-400" : "bg-red-500"}`}
+        variant="destructive"
+        aria-label="Delete Post"
+        className={`hidden md:inline-block ${loading ? "bg-gray-400" : ""}`}
       >
-        <div className={`hidden md:inline-block py-2 px-4 rounded-full ${loading ? "bg-gray-400" : "bg-red-500"}`}>
           {loading ? "Deleting..." : "Delete Post"}
-                          </div>
-<div className="inline-block md:hidden py-2 px-2 bg-red-500 rounded-full">
-                     <TrashIcon size={24} color="#fff" />
-                          </div>
-      </button>
+      </Button>
 
 
 

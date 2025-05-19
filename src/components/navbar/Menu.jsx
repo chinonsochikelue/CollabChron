@@ -30,7 +30,6 @@ export default function Menu({ menu, setMenu }) {
     })
   }
 
-  console.log("STATIS", status ? "authenticated" : "unauthenticated")
   return (
     <AnimatePresence>
       {menu && (

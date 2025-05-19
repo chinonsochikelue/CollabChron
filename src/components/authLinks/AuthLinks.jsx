@@ -27,6 +27,7 @@ const AuthLinks = ({ setMenu }) => {
                 alt="profile"
                 width={40}
                 height={40}
+                property="true"
                 className="rounded-full md:ml-5"
               />
             )}

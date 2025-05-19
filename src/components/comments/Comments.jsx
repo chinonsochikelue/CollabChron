@@ -7,6 +7,8 @@ import useSWR from "swr";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { Button } from "../ui/button";
+import { Textarea } from "../ui/textarea";
 
 const fetcher = async (url) => {
   const res = await fetch(url);
@@ -22,7 +24,7 @@ const fetcher = async (url) => {
 
 const Comments = ({ postSlug }) => {
   const { status } = useSession();
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL; 
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL;
   const { data, mutate, error, isLoading } = useSWR(
     postSlug ? `${baseUrl}/api/comments?postSlug=${postSlug}` : null,
     fetcher
@@ -37,7 +39,7 @@ const Comments = ({ postSlug }) => {
     }
 
     try {
-      const baseUrl = process.env.NEXT_PUBLIC_SITE_URL; 
+      const baseUrl = process.env.NEXT_PUBLIC_SITE_URL;
       await fetch(`${baseUrl}/api/comments`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -56,15 +58,15 @@ const Comments = ({ postSlug }) => {
       <h1 className={styles.title}>Comments</h1>
       {status === "authenticated" ? (
         <div className={styles.write}>
-          <textarea
+          <Textarea
             placeholder="Write a comment..."
-            className={styles.input}
+            className="resize-none flex focus:ml-2"
             value={desc}
             onChange={(e) => setDesc(e.target.value)}
           />
-          <button className={styles.button} onClick={handleSubmit}>
+          <Button className={styles.button} onClick={handleSubmit}>
             Send
-          </button>
+          </Button>
         </div>
       ) : (
         <Link href="/login">Login to write a comment</Link>

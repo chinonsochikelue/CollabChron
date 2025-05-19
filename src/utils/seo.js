@@ -1,3 +1,15 @@
+export const getBreadcrumbs = (postData) => {  
+  
+    const breadcrumbs = [
+        { name: "Home", url: `${process.env.NEXT_PUBLIC_SITE_URL}` },
+        { name: postData.catSlug, url: `${process.env.NEXT_PUBLIC_SITE_URL}/category/${postData.catSlug}` }, 
+        { name: postData.title, url: `${process.env.NEXT_PUBLIC_SITE_URL}/posts/${postData.slug}` }, 
+    ];
+
+    return breadcrumbs;
+};
+
+
 export const getPostMetadata = (postData) => {
     const publishedAt = new Date(postData.createdAt).toISOString();
     const modifiedAt = new Date(postData.updatedAt || postData.createdAt).toISOString();
@@ -13,6 +25,8 @@ export const getPostMetadata = (postData) => {
         "CollabChron",
     ];
     const keywords = keywordsArray.join(", ");
+
+    const breadcrumbs = getBreadcrumbs(postData); // Get dynamic breadcrumb data
 
     return {
         title: postData.title,
@@ -41,15 +55,24 @@ export const getPostMetadata = (postData) => {
             },
         },
         author: postData.user?.name || "Chinonso Chikelue (fluantiX)",
+        breadcrumbs, // Include breadcrumbs here
     };
 };
-
-
 
 
 export const generateJSONLD = (postData) => {
     const url = `${process.env.NEXT_PUBLIC_SITE_URL}/posts/${postData.slug}`;
     const imgUrl = postData.img || "";
+
+    const breadcrumbs = getBreadcrumbs(postData); // Get dynamic breadcrumb data
+
+    // Structure breadcrumbs in JSON-LD format
+    const breadcrumbList = breadcrumbs.map((crumb, index) => ({
+        "@type": "ListItem",
+        "position": index + 1,
+        "name": crumb.name,
+        "item": crumb.url,
+    }));
 
     return {
         "@context": "https://schema.org",
@@ -93,6 +116,10 @@ export const generateJSONLD = (postData) => {
             postData.catSlug,
             postData.user?.name,
             "CollabChron"
-        ].filter(Boolean).join(", ")
+        ].filter(Boolean).join(", "),
+        "breadcrumb": {
+            "@type": "BreadcrumbList",
+            "itemListElement": breadcrumbList, // Include the breadcrumb list
+        }
     };
 };

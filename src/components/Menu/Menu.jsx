@@ -8,7 +8,7 @@ import PopularAuthorPage from "../menuPosts/PopularAuthorPage";
 const Menu = () => {
 
   return (
-    <div className={styles.container}>
+    <div className={`md:col-span-3 ${styles.container}`}>
       <h2 className={styles.subtitle}>{"What's hot"}</h2>
       <h1 className={styles.title}>Most Popular</h1>
       <MenuPosts withImage={true} />
