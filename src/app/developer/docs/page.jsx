@@ -46,7 +46,7 @@ export default function ApiDocumentation() {
     const codeExamples = {
         javascript: `// Using fetch API
 const fetchPosts = async () => {
-  const response = await fetch('${process.env.NEXT_PUBLIC_SITE_URL}/api/v1/posts', {
+  const response = await fetch('${process.env.NEXT_PUBLIC_SITE_URL}/api/v2/posts', {
     headers: {
       'Authorization': 'Bearer YOUR_API_KEY'
     }
@@ -64,7 +64,7 @@ const fetchPosts = async () => {
 import axios from 'axios';
 
 const client = axios.create({
-  baseURL: '${process.env.NEXT_PUBLIC_SITE_URL}/api/v1',
+  baseURL: '${process.env.NEXT_PUBLIC_SITE_URL}/api/v2',
   headers: {
     'Authorization': 'Bearer YOUR_API_KEY'
   }
@@ -78,7 +78,7 @@ const fetchPosts = async () => {
         python: `import requests
 
 API_KEY = "YOUR_API_KEY"
-BASE_URL = "${process.env.NEXT_PUBLIC_SITE_URL}/api/v1"
+BASE_URL = "${process.env.NEXT_PUBLIC_SITE_URL}/api/v2"
 
 def fetch_posts():
     headers = {
@@ -98,7 +98,7 @@ print(f"Found {len(posts['posts'])} posts")`,
 
         php: `<?php
 $apiKey = "YOUR_API_KEY";
-$baseUrl = "${process.env.NEXT_PUBLIC_SITE_URL}/api/v1";
+$baseUrl = "${process.env.NEXT_PUBLIC_SITE_URL}/api/v2";
 
 function fetchPosts() {
     global $apiKey, $baseUrl;
@@ -133,7 +133,7 @@ require 'json'
 require 'uri'
 
 API_KEY = "YOUR_API_KEY"
-BASE_URL = "${process.env.NEXT_PUBLIC_SITE_URL}/api/v1"
+BASE_URL = "${process.env.NEXT_PUBLIC_SITE_URL}/api/v2"
 
 def fetch_posts
   uri = URI("#{BASE_URL}/posts")
@@ -166,7 +166,7 @@ import (
 
 const (
 	apiKey  = "YOUR_API_KEY"
-	baseURL = "${process.env.NEXT_PUBLIC_SITE_URL}/api/v1"
+	baseURL = "${process.env.NEXT_PUBLIC_SITE_URL}/api/v2"
 )
 
 type PostsResponse struct {
@@ -408,7 +408,7 @@ func main() {
                                         <p className="text-gray-700 dark:text-gray-300 flex flex-wrap">
                                             All API requests should be made to:{" "}
                                             <code className="bg-blue-100 flex flex-wrap dark:bg-blue-800 px-2 py-1 rounded text-blue-800 dark:text-blue-200 font-mono">
-                                                {process.env.NEXT_PUBLIC_SITE_URL}/api/v1
+                                                {process.env.NEXT_PUBLIC_SITE_URL}/api/v2
                                             </code>
                                         </p>
                                     </div>
@@ -636,7 +636,7 @@ func main() {
                                                 <p className="mt-1 bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300 px-2 py-1 rounded text-xs font-medium">
                                                     GET
                                                 </p>
-                                                <h3 className="font-mono text-sm md:text-base -mt-0 dark:text-gray-200">/api/v1/posts</h3>
+                                                <h3 className="font-mono text-sm md:text-base -mt-0 dark:text-gray-200">/api/v2/posts</h3>
                                             </div>
                                             <p className="text-gray-500 dark:text-gray-100 text-sm">Get all posts</p>
                                         </div>
@@ -726,7 +726,7 @@ func main() {
                                                     <button
                                                         onClick={() =>
                                                             copyToClipboard(
-                                                                `curl -X GET "${process.env.NEXT_PUBLIC_SITE_URL}/api/v1/posts?page=1&limit=10&category=technology" \\\n  -H "Authorization: Bearer YOUR_API_KEY"`,
+                                                                `curl -X GET "${process.env.NEXT_PUBLIC_SITE_URL}/api/v2/posts?page=1&limit=10&category=technology" \\\n  -H "Authorization: Bearer YOUR_API_KEY"`,
                                                                 "curl-posts",
                                                             )
                                                         }
@@ -737,7 +737,7 @@ func main() {
                                                     </button>
                                                 </div>
                                                 <pre className="font-mono text-sm overflow-x-auto">
-                                                    <code>{`curl -X GET "${process.env.NEXT_PUBLIC_SITE_URL}/api/v1/posts?page=1&limit=10&category=technology" \\
+                                                    <code>{`curl -X GET "${process.env.NEXT_PUBLIC_SITE_URL}/api/v2/posts?page=1&limit=10&category=technology" \\
   -H "Authorization: Bearer YOUR_API_KEY"`}</code>
                                                 </pre>
                                             </div>
@@ -829,7 +829,7 @@ func main() {
                                                 <p className="mt-1 bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300 px-2 py-1 rounded text-xs font-medium">
                                                     GET
                                                 </p>
-                                                <h3 className="font-mono text-sm md:text-base md:text-gray-300 -mt-0">/api/v1/posts/latest</h3>
+                                                <h3 className="font-mono text-sm md:text-base md:text-gray-300 -mt-0">/api/v2/posts/latest</h3>
                                             </div>
                                             <p className="text-gray-500 dark:text-gray-400 text-sm">Get latest posts</p>
                                         </div>
@@ -895,7 +895,7 @@ func main() {
                                                     <button
                                                         onClick={() =>
                                                             copyToClipboard(
-                                                                `curl -X GET "${process.env.NEXT_PUBLIC_SITE_URL}/api/v1/posts/latest?limit=5" \\\n  -H "Authorization: Bearer YOUR_API_KEY"`,
+                                                                `curl -X GET "${process.env.NEXT_PUBLIC_SITE_URL}/api/v2/posts/latest?limit=5" \\\n  -H "Authorization: Bearer YOUR_API_KEY"`,
                                                                 "curl-latest",
                                                             )
                                                         }
@@ -906,7 +906,7 @@ func main() {
                                                     </button>
                                                 </div>
                                                 <pre className="font-mono text-sm overflow-x-auto">
-                                                    <code>{`curl -X GET "${process.env.NEXT_PUBLIC_SITE_URL}/api/v1/posts/latest?limit=5" \\
+                                                    <code>{`curl -X GET "${process.env.NEXT_PUBLIC_SITE_URL}/api/v2/posts/latest?limit=5" \\
   -H "Authorization: Bearer YOUR_API_KEY"`}</code>
                                                 </pre>
                                             </div>
@@ -980,7 +980,7 @@ func main() {
                                                 <p className="mt-1 bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300 px-2 py-1 rounded text-xs font-medium">
                                                     GET
                                                 </p>
-                                                <h3 className="-mt-0 font-mono text-sm md:text-base md:text-gray-300">/api/v1/posts/:id</h3>
+                                                <h3 className="-mt-0 font-mono text-sm md:text-base md:text-gray-300">/api/v2/posts/:id</h3>
                                             </div>
                                             <p className="text-gray-500 dark:text-gray-400 text-sm">Get post by ID</p>
                                         </div>
@@ -1037,7 +1037,7 @@ func main() {
                                                     <button
                                                         onClick={() =>
                                                             copyToClipboard(
-                                                                `curl -X GET "${process.env.NEXT_PUBLIC_SITE_URL}/api/v1/posts/post_id_1" \\\n  -H "Authorization: Bearer YOUR_API_KEY"`,
+                                                                `curl -X GET "${process.env.NEXT_PUBLIC_SITE_URL}/api/v2/posts/post_id_1" \\\n  -H "Authorization: Bearer YOUR_API_KEY"`,
                                                                 "curl-post",
                                                             )
                                                         }
@@ -1048,7 +1048,7 @@ func main() {
                                                     </button>
                                                 </div>
                                                 <pre className="font-mono text-sm overflow-x-auto">
-                                                    <code>{`curl -X GET "${process.env.NEXT_PUBLIC_SITE_URL}/api/v1/posts/post_id_1" \\
+                                                    <code>{`curl -X GET "${process.env.NEXT_PUBLIC_SITE_URL}/api/v2/posts/post_id_1" \\
   -H "Authorization: Bearer YOUR_API_KEY"`}</code>
                                                 </pre>
                                             </div>
@@ -1158,7 +1158,7 @@ func main() {
                                                 <p className="mt-1 bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300 px-2 py-1 rounded text-xs font-medium">
                                                     GET
                                                 </p>
-                                                <h3 className="font-mono text-sm md:text-base md:text-gray-300 -mt-0">/api/v1/users/profile</h3>
+                                                <h3 className="font-mono text-sm md:text-base md:text-gray-300 -mt-0">/api/v2/users/profile</h3>
                                             </div>
                                             <p className="text-gray-500 dark:text-gray-400 text-sm">Get user profile</p>
                                         </div>
@@ -1176,7 +1176,7 @@ func main() {
                                                     <button
                                                         onClick={() =>
                                                             copyToClipboard(
-                                                                `curl -X GET "${process.env.NEXT_PUBLIC_SITE_URL}/api/v1/users/profile" \\\n  -H "Authorization: Bearer YOUR_API_KEY"`,
+                                                                `curl -X GET "${process.env.NEXT_PUBLIC_SITE_URL}/api/v2/users/profile" \\\n  -H "Authorization: Bearer YOUR_API_KEY"`,
                                                                 "curl-profile",
                                                             )
                                                         }
@@ -1187,7 +1187,7 @@ func main() {
                                                     </button>
                                                 </div>
                                                 <pre className="font-mono text-sm overflow-x-auto">
-                                                    <code>{`curl -X GET "${process.env.NEXT_PUBLIC_SITE_URL}/api/v1/users/profile" \\
+                                                    <code>{`curl -X GET "${process.env.NEXT_PUBLIC_SITE_URL}/api/v2/users/profile" \\
   -H "Authorization: Bearer YOUR_API_KEY"`}</code>
                                                 </pre>
                                             </div>
@@ -1255,7 +1255,7 @@ func main() {
                                                 <p className="mt-1 bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300 px-2 py-1 rounded text-xs font-medium">
                                                     GET
                                                 </p>
-                                                <h3 className="font-mono text-sm md:text-base dark:text-gray-300 -mt-0">/api/v1/users/posts</h3>
+                                                <h3 className="font-mono text-sm md:text-base dark:text-gray-300 -mt-0">/api/v2/users/posts</h3>
                                             </div>
                                             <p className="text-gray-500 dark:text-gray-400 text-sm">Get user posts</p>
                                         </div>
@@ -1333,7 +1333,7 @@ func main() {
                                                     <button
                                                         onClick={() =>
                                                             copyToClipboard(
-                                                                `curl -X GET "${process.env.NEXT_PUBLIC_SITE_URL}/api/v1/users/posts?page=1&limit=10" \\\n  -H "Authorization: Bearer YOUR_API_KEY"`,
+                                                                `curl -X GET "${process.env.NEXT_PUBLIC_SITE_URL}/api/v2/users/posts?page=1&limit=10" \\\n  -H "Authorization: Bearer YOUR_API_KEY"`,
                                                                 "curl-user-posts",
                                                             )
                                                         }
@@ -1344,7 +1344,7 @@ func main() {
                                                     </button>
                                                 </div>
                                                 <pre className="font-mono text-sm overflow-x-auto">
-                                                    <code>{`curl -X GET "${process.env.NEXT_PUBLIC_SITE_URL}/api/v1/users/posts?page=1&limit=10" \\
+                                                    <code>{`curl -X GET "${process.env.NEXT_PUBLIC_SITE_URL}/api/v2/users/posts?page=1&limit=10" \\
   -H "Authorization: Bearer YOUR_API_KEY"`}</code>
                                                 </pre>
                                             </div>
@@ -1443,7 +1443,7 @@ func main() {
                                                 <p className="mt-1 bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300 px-2 py-1 rounded text-xs font-medium">
                                                     GET
                                                 </p>
-                                                <h3 className="font-mono text-sm md:text-base dark:text-gray-200 -mt-0">/api/v1/users/stats</h3>
+                                                <h3 className="font-mono text-sm md:text-base dark:text-gray-200 -mt-0">/api/v2/users/stats</h3>
                                             </div>
                                             <p className="text-gray-500 dark:text-gray-400 text-sm">Get user statistics</p>
                                         </div>
@@ -1461,7 +1461,7 @@ func main() {
                                                     <button
                                                         onClick={() =>
                                                             copyToClipboard(
-                                                                `curl -X GET "${process.env.NEXT_PUBLIC_SITE_URL}/api/v1/users/stats" \\\n  -H "Authorization: Bearer YOUR_API_KEY"`,
+                                                                `curl -X GET "${process.env.NEXT_PUBLIC_SITE_URL}/api/v2/users/stats" \\\n  -H "Authorization: Bearer YOUR_API_KEY"`,
                                                                 "curl-stats",
                                                             )
                                                         }
@@ -1472,7 +1472,7 @@ func main() {
                                                     </button>
                                                 </div>
                                                 <pre className="font-mono text-sm overflow-x-auto">
-                                                    <code>{`curl -X GET "${process.env.NEXT_PUBLIC_SITE_URL}/api/v1/users/stats" \\
+                                                    <code>{`curl -X GET "${process.env.NEXT_PUBLIC_SITE_URL}/api/v2/users/stats" \\
   -H "Authorization: Bearer YOUR_API_KEY"`}</code>
                                                 </pre>
                                             </div>
@@ -2020,7 +2020,7 @@ function LatestPosts() {
     const fetchPosts = async () => {
       try {
         const response = await fetch(
-          '${process.env.NEXT_PUBLIC_SITE_URL}/api/v1/posts/latest',
+          '${process.env.NEXT_PUBLIC_SITE_URL}/api/v2/posts/latest',
           {
             headers: {
               'Authorization': 'Bearer YOUR_API_KEY'
@@ -2075,7 +2075,7 @@ function LatestPosts() {
 async function getUserStats() {
   try {
     const response = await axios.get(
-      '${process.env.NEXT_PUBLIC_SITE_URL}/api/v1/users/stats',
+      '${process.env.NEXT_PUBLIC_SITE_URL}/api/v2/users/stats',
       {
         headers: {
           'Authorization': 'Bearer YOUR_API_KEY'

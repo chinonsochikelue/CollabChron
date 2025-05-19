@@ -43,12 +43,12 @@ A full-stack multi-author blog platform built with **Next.js**, **MongoDB**, **P
 
 | Method | Endpoint                 | Description                                 |
 |--------|--------------------------|---------------------------------------------|
-| GET    | `/api/v1/users/profile`  | Get authenticated user's profile info       |
-| GET    | `/api/v1/users/posts`    | Get posts created by authenticated user     |
-| GET    | `/api/v1/users/stats`    | Get post count, views, followers, etc.      |
-| GET    | `/api/v1/posts/latest`   | Fetch latest posts from all users           |
-| GET    | `/api/v1/posts`          | Paginated, filterable list of posts         |
-| GET    | `/api/v1/posts/:id`      | Get specific post by ID                     |
+| GET    | `/api/v2/users/profile`  | Get authenticated user's profile info       |
+| GET    | `/api/v2/users/posts`    | Get posts created by authenticated user     |
+| GET    | `/api/v2/users/stats`    | Get post count, views, followers, etc.      |
+| GET    | `/api/v2/posts/latest`   | Fetch latest posts from all users           |
+| GET    | `/api/v2/posts`          | Paginated, filterable list of posts         |
+| GET    | `/api/v2/posts/:id`      | Get specific post by ID                     |
 
 ---
 

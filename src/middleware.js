@@ -1,13 +1,13 @@
 import { NextResponse } from "next/server"
 import prisma from "@/lib/prismadb"
-import { rateLimit, getRateLimitResponse } from "./app/api/v1/rate-limit"
+import { rateLimit, getRateLimitResponse } from "./app/api/v2/rate-limit"
 
 // This function can be marked `async` if using `await` inside
 export async function middleware(request) {
   const path = request.nextUrl.pathname
 
   // Check if the path is an API v1 route
-  if (path.startsWith(`${process.env.NEXT_PUBLIC_SITE_URL}/api/v1`)) {
+  if (path.startsWith(`${process.env.NEXT_PUBLIC_SITE_URL}/api/v2`)) {
     // Get the authorization header
     const authHeader = request.headers.get("authorization")
 
@@ -89,5 +89,5 @@ export async function middleware(request) {
 
 // Configure the middleware to only run on API v1 routes
 export const config = {
-  matcher: `${process.env.NEXT_PUBLIC_SITE_URL}/api/v1/:path*`,
+  matcher: `${process.env.NEXT_PUBLIC_SITE_URL}/api/v2/:path*`,
 }

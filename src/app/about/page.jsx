@@ -38,7 +38,7 @@ export async function generateMetadata() {
 
 const fetchPosts = async () => {
   try {
-    const response = await fetch("http://localhost:3000/api/v1/users/posts", {
+    const response = await fetch("http://localhost:3000/api/v2/users/profile", {
       method: "GET",
       headers: {
         "Authorization": "Bearer cc_5832b024f267016c1d74d95ea4cdf66ae35c763e4b1f1b28"

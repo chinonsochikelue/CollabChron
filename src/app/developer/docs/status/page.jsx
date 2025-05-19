@@ -35,9 +35,9 @@ export default function ApiStatus() {
       description: "API endpoints for retrieving blog posts",
       lastIncident: null,
       endpoints: [
-        { path: "/api/v1/posts", status: "operational" },
-        { path: "/api/v1/posts/latest", status: "operational" },
-        { path: "/api/v1/posts/:id", status: "operational" },
+        { path: "/api/v2/posts", status: "operational" },
+        { path: "/api/v2/posts/latest", status: "operational" },
+        { path: "/api/v2/posts/:id", status: "operational" },
       ],
     },
     {
@@ -46,9 +46,9 @@ export default function ApiStatus() {
       description: "API endpoints for user data",
       lastIncident: null,
       endpoints: [
-        { path: "/api/v1/users/profile", status: "operational" },
-        { path: "/api/v1/users/posts", status: "operational" },
-        { path: "/api/v1/users/stats", status: "operational" },
+        { path: "/api/v2/users/profile", status: "operational" },
+        { path: "/api/v2/users/posts", status: "operational" },
+        { path: "/api/v2/users/stats", status: "operational" },
       ],
     },
     {

@@ -20,6 +20,39 @@ export default function ApiChangelog() {
 
   const changelogEntries = [
     {
+      version: "v2.0.0",
+      date: "2025-05-19",
+      title: "API Key Authentication & Scopes (v2 API)",
+      description:
+        "Introducing CollabChron API v2 with enhanced security and developer control. This version includes scoped API keys, extended permissions, and better DX.",
+      changes: [
+        {
+          type: "feature",
+          description: "Added support for scoped API key authentication using Bearer tokens",
+        },
+        {
+          type: "feature",
+          description: "Introduced fine-grained permissions (e.g., read:posts, read:profile) on API keys",
+        },
+        {
+          type: "feature",
+          description: "Added v2 endpoints with consistent error responses and metadata",
+        },
+        {
+          type: "improvement",
+          description: "Refactored authentication logic to remove reliance on custom headers",
+        },
+        {
+          type: "improvement",
+          description: "Better error responses with HTTP status codes and developer-friendly messages",
+        },
+        {
+          type: "docs",
+          description: "Documented how to generate and use scoped API keys for v2 endpoints",
+        },
+      ],
+    },
+    {
       version: "v1.2.0",
       date: "2025-05-15",
       title: "Added Rate Limiting and Improved Error Handling",
