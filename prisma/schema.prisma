@@ -62,6 +62,7 @@ model User {
   Clap          Clap[]
   Following     Following[]
   apiKeys       ApiKey[]
+  userSocialAccounts UserSocialAccount[]
 }
 
 model VerificationToken {
@@ -156,4 +157,28 @@ model ApiKey {
   user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   permissions String[]  @default(["read:posts", "read:profile"])
   isRevoked   Boolean   @default(false)
+}
+
+model SiteSocialAccount {
+  id          String @id @default(cuid()) @map("_id")
+  platform    String @unique // e.g., "Twitter", "Facebook"
+  apiKey      String
+  apiSecret   String
+  accessToken String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model UserSocialAccount {
+  id          String @id @default(cuid()) @map("_id")
+  userId      String
+  user        User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  platform    String // e.g., "Twitter", "Facebook"
+  apiKey      String
+  apiSecret   String
+  accessToken String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([userId, platform])
 }

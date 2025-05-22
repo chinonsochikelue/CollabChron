@@ -14,10 +14,12 @@ import {
 } from "firebase/storage";
 import { app } from "@/utils/firebase";
 import toast, { Toaster } from "react-hot-toast";
-import { ArrowLeft, CircleFadingPlusIcon } from "lucide-react";
+import { ArrowLeft, CircleFadingPlusIcon, TwitterIcon } from "lucide-react";
+import { signIn, signOut, useSession } from "next-auth/react";
 
 const EditProfilePage = ({ user }) => {
   const router = useRouter();
+  const { data: session, update } = useSession();
   const [name, setName] = useState(user?.name);
   const [skills, setSkills] = useState(user?.skills);
   const [about, setAbout] = useState(user?.about);
@@ -113,6 +115,68 @@ const EditProfilePage = ({ user }) => {
         <div className="flex-col xl:flex-row gap-8">
           <div className="xl:h-[54%] order-1 xl:order-none">
             <SocialButtons user={user} />
+            {/* Social Media Connections Section */}
+            <div className="mt-8 p-10 rounded-xl shadow">
+              <h3 className="text-2xl font-bold mb-4">Social Media Connections</h3>
+              {/* Twitter Connection */}
+              <div className="flex items-center justify-between py-4 border-b">
+                <div className="flex items-center">
+                  <TwitterIcon className="w-6 h-6 mr-2" />
+                  <span>Twitter</span>
+                </div>
+                {user.userSocialAccounts?.find(acc => acc.platform === "twitter") ? (
+                  <div className="flex items-center">
+                    <span className="mr-4">{user.userSocialAccounts.find(acc => acc.platform === "twitter").username || "Connected"}</span>
+                    <button
+                      onClick={async () => {
+                        // Placeholder for disconnect functionality
+                        // In a real app, this would call an API route
+                        // For now, we can try to signOut from the specific provider if possible
+                        // or simulate it by updating the session/UI
+                        toast.loading("Disconnecting Twitter...");
+                        toast.loading("Disconnecting Twitter...");
+                        try {
+                          const res = await fetch(`/api/social-accounts`, {
+                            method: "DELETE",
+                            headers: {
+                              "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify({ platform: "twitter" }), // userId is inferred from session on backend
+                          });
+
+                          if (!res.ok) {
+                            const errorData = await res.json();
+                            throw new Error(errorData.error || "Failed to disconnect Twitter");
+                          }
+                          
+                          // Ensure user object and userSocialAccounts are updated locally
+                          // This assumes `update()` refetches session and user data correctly.
+                          // If not, manual update of local user state might be needed.
+                          await update(); 
+                                                    
+                          toast.dismiss();
+                          toast.success("Twitter disconnected successfully!");
+                        } catch (error) {
+                          toast.dismiss();
+                          toast.error(error.message || "Failed to disconnect Twitter.");
+                          console.error("Disconnect error:", error);
+                        }
+                      }}
+                      className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600"
+                    >
+                      Disconnect
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => signIn("twitter")}
+                    className="bg-sky-500 text-white py-2 px-4 rounded-md hover:bg-sky-600 flex items-center"
+                  >
+                    <TwitterIcon className="w-5 h-5 mr-2" /> Connect to Twitter
+                  </button>
+                )}
+              </div>
+            </div>
             <form
               onSubmit={(e) =>
                 handleSubmit(e, user.id, router, setLoading, media)
@@ -150,12 +214,12 @@ const EditProfilePage = ({ user }) => {
                   onChange={(e) => setAbout(e.target.value)}
                   className="h-[200px] flex w-full rounded-md border focus:border-blue-500 bg-primary px-4 py-5 text-base placeholder:text-black/60 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-red-500 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50"
                 ></textarea>
-                </div>
-                <div className="ttext-sm text-gray-500">
-                  {about.length}/220 characters
-                </div>
-                <div className="flex flex-col xl:flex-row justify-evenly">
-                 <div className="xl:order-2">
+              </div>
+              <div className="text-sm text-gray-500 dark:text-gray-400">
+                {about?.length || 0}/220 characters
+              </div>
+              <div className="flex flex-col xl:flex-row justify-evenly">
+                <div className="xl:order-2">
                 <button
                   type="submit"
                   className="bg-blue-500 rounded-md disabled:bg-slate-400 text-white disabled:text-gray-200 py-2 px-4 mx-auto w-full flex gap-2 items-center justify-center"

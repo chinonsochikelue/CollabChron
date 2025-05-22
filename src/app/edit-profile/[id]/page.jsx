@@ -8,6 +8,9 @@ import EditProfilePage from "@/components/EditProfilePage/EditProfilePage";
 const getUserData = async (id) => {
   return await prisma.user.findUnique({
     where: { id },
+    include: {
+      userSocialAccounts: true, // Include social accounts
+    },
   });
 };
 

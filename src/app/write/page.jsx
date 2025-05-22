@@ -33,6 +33,7 @@ import { useState, useEffect, useRef } from "react";
 import toast from "react-hot-toast";
 import Image from "next/image";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { sharePostToSocialMedia } from "@/utils/socialSharing"; // Import the sharing function
 
 const lowlight = createLowlight();
 lowlight.register({ ts });
@@ -57,7 +58,7 @@ export const CustomImage = TipTapImages.extend({
 });
 
 const WritePage = () => {
-  const { status } = useSession();
+  const { data: session, status } = useSession(); // Modified to get session data
   const router = useRouter();
   const [isUploading, setIsUploading] = useState(false);
   const [isPreview, setIsPreview] = useState(false); // New state for preview mode
@@ -157,14 +158,79 @@ const WritePage = () => {
       });
 
       if (res.status === 200) {
-        const data = await res.json();
+        const postData = await res.json(); // Renamed to postData to avoid conflict
         toast.success("Post published successfully!");
-        router.push(`/posts/${data.slug}`);
+        router.push(`/posts/${postData.slug}`);
+
+        // Auto-sharing logic starts here
+        const postDetails = {
+          title: title,
+          content: editor.getHTML(), // Or a plain text version: editor.getText()
+          slug: postData.slug,
+        };
+
+        // 1. Fetch user's social accounts and share
+        if (session?.user?.id) {
+          try {
+            const userSocialAccountsRes = await fetch(`/api/users/${session.user.id}/social-accounts`);
+            if (userSocialAccountsRes.ok) {
+              const userAccounts = await userSocialAccountsRes.json();
+              if (userAccounts && userAccounts.length > 0) {
+                toast.loading("Sharing post to your social accounts...", { id: "userShareToast" });
+                for (const account of userAccounts) {
+                  // Assuming account object contains platform, accessToken, accessSecret etc.
+                  // The UserSocialAccount model stores apiKey as accessToken and apiSecret as accessSecret for Twitter OAuth1.0a
+                  await sharePostToSocialMedia(postDetails, account.platform, { 
+                    accessToken: account.apiKey, // Mapping UserSocialAccount.apiKey to accessToken
+                    accessSecret: account.apiSecret, // Mapping UserSocialAccount.apiSecret to accessSecret
+                  }, false); // isSiteAccount = false
+                }
+                toast.success("Shared to your social accounts!", { id: "userShareToast" });
+              }
+            } else {
+              console.error("Failed to fetch user social accounts for sharing.");
+              toast.error("Could not fetch your social accounts for sharing.");
+            }
+          } catch (shareError) {
+            console.error("Error sharing to user social accounts:", shareError);
+            toast.error("Error sharing to your social accounts.");
+          }
+        }
+
+        // 2. Fetch site's social accounts and share
+        try {
+          const siteSocialAccountsRes = await fetch(`/api/site-social-accounts`); // New API endpoint needed
+          if (siteSocialAccountsRes.ok) {
+            const siteAccounts = await siteSocialAccountsRes.json();
+             if (siteAccounts && siteAccounts.length > 0) {
+              toast.loading("Sharing post to site's social accounts...", { id: "siteShareToast" });
+              for (const account of siteAccounts) {
+                // For site accounts, credentials come from env vars or SiteSocialAccount model directly
+                // The sharePostToSocialMedia function already handles fetching from env vars for site accounts if credentials are not passed explicitly
+                await sharePostToSocialMedia(postDetails, account.platform, {
+                  apiKey: account.apiKey, // As stored in SiteSocialAccount
+                  apiSecret: account.apiSecret,
+                  accessToken: account.accessToken,
+                }, true); // isSiteAccount = true
+              }
+              toast.success("Shared to site's social accounts!", { id: "siteShareToast" });
+            }
+          } else {
+            console.error("Failed to fetch site social accounts for sharing.");
+            // No user-facing error for this, as it's a site function
+          }
+        } catch (shareError) {
+          console.error("Error sharing to site social accounts:", shareError);
+          // No user-facing error
+        }
+        // End of auto-sharing logic
+
       } else {
         toast.error("Failed to publish the post.");
       }
     } catch (error) {
-      toast.error("An error occurred while publishing the post.");
+      console.error("Error publishing post or sharing:", error); // Log the actual error
+      toast.error("An error occurred during the publishing process.");
     } finally {
       setLoading(false);
     }

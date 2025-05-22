@@ -1,6 +1,7 @@
 import { PrismaAdapter } from "@auth/prisma-adapter"
 import GithubProvider from "next-auth/providers/github"
 import GoogleProvider from "next-auth/providers/google"
+import TwitterProvider from "next-auth/providers/twitter"
 import prisma from "@/lib/prismadb"
 import { getServerSession } from "next-auth"
 
@@ -14,6 +15,10 @@ export const authOptions = {
     GithubProvider({
       clientId: process.env.GITHUB_ID,
       clientSecret: process.env.GITHUB_SECRET,
+    }),
+    TwitterProvider({
+      clientId: process.env.TWITTER_CLIENT_ID,
+      clientSecret: process.env.TWITTER_CLIENT_SECRET,
     }),
   ],
   pages: {
